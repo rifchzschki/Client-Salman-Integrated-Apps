@@ -3,7 +3,11 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          cream: "var(--cream)", // Gunakan warna dari CSS Variables
+          cream: "var(--cream)",
+          bonewhite: "var(--bonewhite)",
+          dbrown: "var(--dbrown)",
+          lbrown: "var(--lbrown)",
+          l2brown: "var(--l2brown)",
         },
       },
     },
