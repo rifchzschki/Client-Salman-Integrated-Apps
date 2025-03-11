@@ -1,4 +1,5 @@
 "use client";
+import Error from "next/error";
 import { useState, useEffect, JSX } from "react";
 import {
   FaSun,
@@ -7,6 +8,27 @@ import {
   FaMoon,
   FaCloud,
 } from "react-icons/fa";
+import "@shoelace-style/shoelace/dist/themes/light.css";
+import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
+import dynamic from "next/dynamic";
+
+setBasePath(
+  "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.0/cdn/"
+);
+const SlIcon = dynamic(
+  () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
+const SlAlert = dynamic(
+  () => import("@shoelace-style/shoelace/dist/react/alert/index.js"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 
 const prayerIcon: {
   name: string;
@@ -64,6 +86,7 @@ export default function PrayerSchedule() {
   const [location, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState<string>("");
   const [prayerTimes, setPrayerTimes] = useState<PrayerTimes | null>(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const updateClock = () => {
@@ -78,24 +101,32 @@ export default function PrayerSchedule() {
   }, []);
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setError("Geolocation tidak didukung di browser ini.");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const loc: Location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        setLocation(loc);
-        fetchPrayerTimes(loc);
-      },
-      (err) => {
-        setError("Gagal mendapatkan lokasi: " + err.message);
+    const checkLocation = () => {
+      if (!navigator.geolocation) {
+        setError("Geolocation tidak didukung di browser ini.");
+        setShowAlert(true);
+        return;
       }
-    );
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc: Location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          setLocation(loc);
+          setShowAlert(false);
+          fetchPrayerTimes(loc);
+        },
+        (err) => {
+          setError("Gagal mendapatkan lokasi: " + err.message);
+          setShowAlert(true);
+        }
+      );
+    };
+    checkLocation();
+    const interval = setInterval(checkLocation, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchPrayerTimes = async (loc: Location) => {
@@ -105,8 +136,9 @@ export default function PrayerSchedule() {
       const month = String(now.getMonth() + 1).padStart(2, "0"); // Format 01-12 (karena getMonth() dimulai dari 0)
       const year = now.getFullYear();
       const formattedDate = `${day}-${month}-${year}`;
+      // tune 2,2,-5,2,0,5,5,2,0 (bandung) --> setiap daerah punya galat sedikit,kita nyesuain galat ke muslim pro
       const response = await fetch(
-        `https://api.aladhan.com/v1/timings/${formattedDate}?latitude=${loc.latitude}&longitude=${loc.longitude}&method=20&shafaq=ahmer&tune=5%2C3%2C5%2C7%2C9%2C-1%2C0%2C8%2C-6&school=0&midnightMode=0&calendarMethod=UAQ`
+        `https://api.aladhan.com/v1/timings/${formattedDate}?latitude=${loc.latitude}&longitude=${loc.longitude}&method=20&shafaq=ahmer&tune=2%2C2%2C-5%2C2%2C0%2C5%2C5%2C2%2C0&calendarMethod=UAQ`
       );
       const result = await response.json();
 
@@ -125,23 +157,37 @@ export default function PrayerSchedule() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center p-6 min-h-screen">
       <h1 className="text-2xl font-semibold mb-4">Jadwal Sholat</h1>
       <p className="text-lg text-gray-600 mb-6">
         Waktu Saat Ini: {currentTime}
       </p>
-      <div className="flex space-x-6 bg-white p-4 rounded-xl shadow-lg">
-        {prayerIcon.map((prayer, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 shadow-md">
-              {prayer.icon}
+      <div className="flex flex-col space-x-6 bg-white p-4 rounded-xl shadow-lg">
+        {showAlert && (
+          <SlAlert variant="warning" open className="w-full m-0 mb-4">
+            <SlIcon slot="icon" name="exclamation-triangle" />
+            <strong>Lokasi belum diberikan</strong>
+            <br />
+            Mohon berikan izin lokasi untuk melihat jadwal sholat.
+          </SlAlert>
+        )}
+        <div className="flex flex-row justify-between">
+          {prayerIcon.map((prayer, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 shadow-md">
+                {prayer.icon}
+              </div>
+              <p className="mt-2 text-gray-700 font-semibold">{prayer.name}</p>
+              {!showAlert ? (
+                <p className="text-sm text-gray-500">
+                  {findTimes(prayer.nameTimings)}
+                </p>
+              ) : (
+                <p className="text-black">...</p>
+              )}
             </div>
-            <p className="mt-2 text-gray-700 font-semibold">{prayer.name}</p>
-            <p className="text-sm text-gray-500">
-              {findTimes(prayer.nameTimings)}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
