@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PrayerSchedule from '../components/prayerTimes'
 
 export default function HomePage() {
   return (
@@ -10,6 +11,7 @@ export default function HomePage() {
           <li><Link href="/login">login</Link></li>
         </ul>
       </nav>
+      <PrayerSchedule/>
     </main>
   );
 }
