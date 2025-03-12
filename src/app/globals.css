@@ -3,22 +3,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --cream: #FFFCF5;
+  --bonewhite: #FFFCF5;
+  --cream: #F8F4E1;
+  --d-brown: #523B35;
+  --l-brown: #543310;
+  --l2-brown: #74512D;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-cream: var(--cream);
+  --color-d-brown: var(--d-brown);
+  --color-l-brown: var(--l-brown);
+  --color-l2-brown: var(--l2-brown);
+  --color-bonewhite: var(--bonewhite);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

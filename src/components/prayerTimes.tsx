@@ -1,5 +1,4 @@
 "use client";
-import Error from "next/error";
 import { useState, useEffect, JSX } from "react";
 import {
   FaSun,
@@ -157,12 +156,12 @@ export default function PrayerSchedule() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 min-h-screen">
+    <div className="flex flex-col items-center p-6 rounded-lg shadow-lg bg-white w-11/12">
       <h1 className="text-2xl font-semibold mb-4">Jadwal Sholat</h1>
       <p className="text-lg text-gray-600 mb-6">
         Waktu Saat Ini: {currentTime}
       </p>
-      <div className="flex flex-col space-x-6 bg-white p-4 rounded-xl shadow-lg">
+      <div className="flex flex-col space-x-6 w-full">
         {showAlert && (
           <SlAlert variant="warning" open className="w-full m-0 mb-4">
             <SlIcon slot="icon" name="exclamation-triangle" />
@@ -171,9 +170,12 @@ export default function PrayerSchedule() {
             Mohon berikan izin lokasi untuk melihat jadwal sholat.
           </SlAlert>
         )}
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row items-center justify-between">
           {prayerIcon.map((prayer, index) => (
-            <div key={index} className="flex flex-col items-center">
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center"
+            >
               <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 shadow-md">
                 {prayer.icon}
               </div>
