@@ -4,7 +4,7 @@ export default function Login() {
   return (
     <main className="w-screen h-screen bg-cream flex items-center justify-center overflow-hidden">
         <div className="relative w-[75vw] h-[80vh] bg-bonewhite rounded-4xl flex items-center justify-end overflow-hidden">
-            <img src="/masjid-salman-itb.jpg" alt="" className="absolute min-w-[100%] object-cover z-0"/>
+            <img src="/masjid-salman-itb.jpg" alt="" className="absolute min-w-[100%] min-h-[100%] object-cover z-0"/>
             <div className="absolute w-[35%] h-[95%] flex flex-col gap-5 items-center justify-center bg-bonewhite z-10 m-4 rounded-3xl">
                 <img src="/logo-salman.svg" className="absolute top-5 left-5 w-17 h-17"/>
                 <div>
