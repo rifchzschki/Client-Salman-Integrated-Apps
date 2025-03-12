@@ -5,9 +5,9 @@ module.exports = {
         colors: {
           cream: "var(--cream)",
           bonewhite: "var(--bonewhite)",
-          dbrown: "var(--dbrown)",
-          lbrown: "var(--lbrown)",
-          l2brown: "var(--l2brown)",
+          dbrown: "var(--d-brown)",
+          lbrown: "var(--l-brown)",
+          l2brown: "var(--l2-brown)",
         },
       },
     },
