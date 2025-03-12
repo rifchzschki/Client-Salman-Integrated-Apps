@@ -34,7 +34,7 @@ const Navbar = () => {
         >
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 text-white hover:bg-yellow-900 rounded-md"
+            className="p-2 text-white cursor-pointer transition-transform transform hover:scale-105 rounded-md"
           >
             <X size={24} />
           </button>
