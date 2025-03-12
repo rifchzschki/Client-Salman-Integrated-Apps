@@ -8,9 +8,9 @@ export default function Login() {
             <div className="absolute w-[35%] h-[95%] flex flex-col gap-5 items-center justify-center bg-bonewhite z-10 m-4 rounded-3xl">
                 <img src="/logo-salman.svg" className="absolute top-5 left-5 w-17 h-17"/>
                 <div>
-                    <h1 className="text-3xl text-black">Sign up</h1>
+                    <h1 className="text-3xl text-black mt-17">Sign up</h1>
                 </div>
-                <form action="" className="flex flex-col gap-5 items-center justify-center w-[70%] mt-5">
+                <form action="" className="flex flex-col gap-5 items-center justify-center w-[70%] mt-3">
                     <div className="w-[100%] h-12 border-3 border-d-brown rounded-lg flex items-center pl-2">
                         {/* <img src="/profile.svg" className="w-[10%] h-[80%]"/> */}
                         <input 

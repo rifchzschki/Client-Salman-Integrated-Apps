@@ -10,9 +10,9 @@ export default function Login() {
                     <img src="/logo-salman.svg" className="w-17 h-17"/>
                 </div>
                 <div>
-                    <h1 className="text-3xl text-black mt-8">Sign in</h1>
+                    <h1 className="text-3xl text-black mt-15">Sign in</h1>
                 </div>
-                <form action="" className="flex flex-col gap-5 items-center justify-center w-[70%] mt-5">
+                <form action="" className="flex flex-col gap-5 items-center justify-center w-[70%] mt-10">
                     <div className="w-[100%] h-12 border-3 border-black rounded-lg flex items-center pl-2">
                         {/* <img src="/profile.svg" className="w-[10%] h-[80%]"/> */}
                         <input 
