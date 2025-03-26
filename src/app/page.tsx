@@ -5,11 +5,12 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ImageCarousel from "@/components/imageCarousel";
 import VisitorGraph from "@/components/visitorGraph";
+import FinanceInfo from "@/components/financeInfo";
 
 export default function HomePage() {
   return (
     <main className="flex flex-row w-full py-12 px-10 bg-cream">
-      <section className="w-3/4 flex flex-col gap-10">
+      <section className="w-3/4 flex-grow flex flex-col space-y-10">
         <div className="flex flex-col max-h-dvh h-1/2 items-center justify-center ">
           <ImageCarousel />
         </div>
@@ -19,11 +20,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="w-1/3">
-        <div className="flex flex-col items-center justify-between h-full">
-          <PrayerSchedule />
-          <VisitorGraph />
-        </div>
+      <section className="w-1/3 flex flex-col space-y-6">
+        <PrayerSchedule />
+        <VisitorGraph />
+        <FinanceInfo />
       </section>
     </main>
   );
