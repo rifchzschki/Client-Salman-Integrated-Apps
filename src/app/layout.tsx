@@ -4,7 +4,6 @@ import "./globals.css";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path.js";
 import ShoelaceSetup from "./shoelace/shoelace-setup";
-import Navbar from "@/components/navbar";
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.0/cdn/"
@@ -35,7 +34,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
         <ShoelaceSetup>{children}</ShoelaceSetup>
       </body>
     </html>

@@ -31,27 +31,7 @@ const apps = [
     name: "Facebook",
     icon: <FaFacebook size={32} />,
     color: "bg-blue-700 text-white",
-  },
-  {
-    name: "Google",
-    icon: <FaGoogle size={32} />,
-    color: "bg-yellow-500 text-white",
-  },
-  {
-    name: "Slack",
-    icon: <FaSlack size={32} />,
-    color: "bg-purple-500 text-white",
-  },
-  {
-    name: "Trello",
-    icon: <FaTrello size={32} />,
-    color: "bg-blue-600 text-white",
-  },
-  {
-    name: "Spotify",
-    icon: <FaSpotify size={32} />,
-    color: "bg-green-500 text-white",
-  },
+  }
 ];
 
 const AppPortal = () => {
