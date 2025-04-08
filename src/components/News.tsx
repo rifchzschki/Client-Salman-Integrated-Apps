@@ -34,16 +34,16 @@ export default function News() {
   // untuk sementara pakai ini dulu sebelum bisa login
 
   const fetchNews = async (query = "") => {
-    console.log("fetch")
+    console.log("fetch");
     if (!nextPageUrl || loading) return;
-  
+
     setLoading(true);
     try {
       const url = query ? `/api/news?search=${query}` : nextPageUrl;
       const response = await fetch(url);
-      const data = await response.json();
-  
-      setNews(query ? data : [...new Set([...news, ...data])]); 
+      const data = (await response.json()).data;
+
+      setNews(query ? data : [...new Set([...news, ...data])]);
       setNextPageUrl(data.next_page_url);
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -128,6 +128,11 @@ export default function News() {
     }
   };
 
+  const openLink = (link : string)=>{
+    console.log("clicked")
+    window.open(link, '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <div className="flex flex-col items-center p-6 space-y-6">
       <div className="flex gap-4 items-center">
@@ -159,7 +164,7 @@ export default function News() {
                 <h3 className="text-xl font-semibold">{item.title}</h3>
                 <p className="text-sm text-gray-500">By {item.author}</p>
                 <p className="text-gray-700">{item.description}</p>
-                <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                  <button onClick={() => openLink(item.link)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                   Read More
                 </button>
               </div>
@@ -186,7 +191,9 @@ export default function News() {
               type="text"
               placeholder="Judul"
               value={newNews.title}
-              onChange={(e) => setNewNews({ ...newNews, title: e.target.value })}
+              onChange={(e) =>
+                setNewNews({ ...newNews, title: e.target.value })
+              }
               className="w-full border p-2 mb-2"
             />
 
@@ -206,7 +213,9 @@ export default function News() {
                 />
                 <button
                   onClick={() => {
-                    const updated = newNews.author.filter((_, index) => index !== i);
+                    const updated = newNews.author.filter(
+                      (_, index) => index !== i
+                    );
                     setNewNews({ ...newNews, author: updated });
                   }}
                   className="text-red-500 text-sm"
@@ -238,12 +247,16 @@ export default function News() {
             <textarea
               placeholder="Deskripsi"
               value={newNews.description}
-              onChange={(e) => setNewNews({ ...newNews, description: e.target.value })}
+              onChange={(e) =>
+                setNewNews({ ...newNews, description: e.target.value })
+              }
               className="w-full border p-2 mb-2"
             />
 
             <div className="mb-2">
-              <label className="block font-medium mb-1">Poster (opsional)</label>
+              <label className="block font-medium mb-1">
+                Poster (opsional)
+              </label>
               <div className="flex items-center gap-3">
                 <label className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer">
                   Choose File
@@ -290,7 +303,10 @@ export default function News() {
             </div>
 
             <div className="flex justify-end gap-2">
-              <button onClick={() => setShowAddPopup(false)} className="text-gray-600">
+              <button
+                onClick={() => setShowAddPopup(false)}
+                className="text-gray-600"
+              >
                 Cancel
               </button>
               <button
