@@ -2,11 +2,11 @@ import PrayerSchedule from "../components/prayerTimes";
 import AppPortal from "@/components/portalApps";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ImageCarousel from "@/components/imageCarousel";
 import VisitorGraph from "@/components/visitorGraph";
 import Navbar from "@/components/navbar";
 import News from "@/components/News";
 import Quotes from "@/components/Quotes";
+import ImageCardList from "@/components/imageCardList";
 
 export default function HomePage() {
   return (
@@ -14,9 +14,17 @@ export default function HomePage() {
       <section className="h-dvh snap-start snap-always">
         <Navbar />
         <div className="flex flex-row p-10">
-          <div className="w-3/4 flex flex-col gap-10">
-            <div className="flex flex-col h-1/2 items-center justify-center">
-              <ImageCarousel />
+          <div className="w-3/4 flex flex-col gap-10 justify-around overflow-hidden">
+            <div className="w-full flex justify-center">
+              <h1 className="text-5xl font-bold text-gray-900">
+                Salman{" "}
+                <span className="text-[#4B2E2E] font-extrabold">
+                  Integrated Apps
+                </span>
+              </h1>
+            </div>
+            <div className="flex flex-col items-center justify-center px-10">
+              <ImageCardList />
             </div>
             {/* <div className="flex flex-col items-center justify-center">
               <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
@@ -42,7 +50,7 @@ export default function HomePage() {
                 <AppPortal />
               </div>
               <div className="max-w-4xl w-full h-8/11 bg-white shadow-lg rounded-lg p-6">
-                <News/>
+                <News />
               </div>
             </div>
           </div>
