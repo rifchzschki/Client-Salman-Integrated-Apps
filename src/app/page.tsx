@@ -1,14 +1,45 @@
+'use client';
 import PrayerSchedule from "../components/prayerTimes";
 import AppPortal from "@/components/portalApps";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import VisitorGraph from "@/components/visitorGraph";
+import FinanceInfo from "@/components/financeInfo";
 import Navbar from "@/components/navbar";
 import News from "@/components/News";
 import Quotes from "@/components/Quotes";
 import ImageCardList from "@/components/imageCardList";
+import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 
 export default function HomePage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    fetch("http://localhost:8000/api/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+        .then((res) => {
+          if (!res.ok) throw new Error("Unauthorized");
+          return res.json();
+        })
+        .then((data) => setUser(data))
+        .catch(() => router.replace("/login"))
+        .finally(() => setLoading(false));
+  }, [router]);
+
+  if (loading) return null;
   return (
     <main className="flex flex-col w-full p-0 m-0 bg-cream snap-y snap-mandatory overflow-y-scroll h-dvh">
       <section className="h-dvh snap-start snap-always">
@@ -58,6 +89,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center justify-between h-full">
               <PrayerSchedule />
               <VisitorGraph />
+              <FinanceInfo />
             </div>
           </div>
         </div>
