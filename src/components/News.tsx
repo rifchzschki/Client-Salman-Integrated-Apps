@@ -13,6 +13,7 @@ interface NewsItem {
   created_at: string;
   updated_at: string;
 }
+
 export default function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState<string | null>(
@@ -21,7 +22,17 @@ export default function News() {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editingNewsId, setEditingNewsId] = useState<number | null>(null);
   const [newNews, setNewNews] = useState({
+    title: "",
+    author: [""],
+    description: "",
+    link: "",
+    poster: null as File | null,
+    cover: null as File | null,
+  });
+  const [editNews, setEditNews] = useState({
     title: "",
     author: [""],
     description: "",
@@ -128,10 +139,45 @@ export default function News() {
     }
   };
 
-  const openLink = (link : string)=>{
-    console.log("clicked")
-    window.open(link, '_blank', 'noopener,noreferrer');
-  }
+  const openLink = (link: string) => {
+    console.log("clicked");
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
+
+  const handleEditClick = (item: NewsItem) => {
+    setEditingNewsId(item.news_id);
+    setEditNews({
+      title: item.title,
+      author: Array.isArray(item.author) ? item.author : [item.author],
+      description: item.description || "",
+      link: item.link,
+      poster: null,
+      cover: null,
+    });
+    setShowEditPopup(true);
+  };
+
+  const handleSaveEdit = () => {
+    // Simple client-side update without backend calls
+    setNews(
+      news.map((item) => {
+        if (item.news_id === editingNewsId) {
+          return {
+            ...item,
+            title: editNews.title,
+            author: editNews.author,
+            description: editNews.description,
+            link: editNews.link,
+            // We're not updating the images in this client-side only implementation
+          };
+        }
+        return item;
+      })
+    );
+    
+    setShowEditPopup(false);
+    setEditingNewsId(null);
+  };
 
   return (
     <div className="flex flex-col items-center p-6 space-y-6">
@@ -160,21 +206,32 @@ export default function News() {
                 alt={item.title}
                 className="w-1/3 h-auto object-cover rounded-lg"
               />
-              <div className=" w-3/5 h-full">
+              <div className="w-3/5 h-full">
                 <h3 className="text-xl font-semibold">{item.title}</h3>
                 <p className="text-sm text-gray-500">By {item.author}</p>
                 <p className="text-gray-700">{item.description}</p>
-                  <button onClick={() => openLink(item.link)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                <button
+                  onClick={() => openLink(item.link)}
+                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                >
                   Read More
                 </button>
               </div>
               {currentUserRole === "management" && (
-                <button
-                  onClick={() => handleDeleteNews(item.news_id)}
-                  className="ml-auto bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 self-start"
-                >
-                  Delete
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => handleDeleteNews(item.news_id)}
+                    className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 self-start"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => handleEditClick(item)}
+                    className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 self-start"
+                  >
+                    Edit
+                  </button>
+                </div>
               )}
             </div>
           </motion.div>
@@ -182,6 +239,7 @@ export default function News() {
       </div>
       {loading && <p className="text-gray-500">Loading more news...</p>}
 
+      {/* Add News Popup */}
       {showAddPopup && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-[90%] max-w-md">
@@ -314,6 +372,144 @@ export default function News() {
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
                 Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit News Popup */}
+      {showEditPopup && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[90%] max-w-md">
+            <h2 className="text-lg font-bold mb-4">Edit News</h2>
+            <label className="block mb-2 font-medium">Judul</label>
+            <input
+              type="text"
+              placeholder="Judul"
+              value={editNews.title}
+              onChange={(e) =>
+                setEditNews({ ...editNews, title: e.target.value })
+              }
+              className="w-full border p-2 mb-2"
+            />
+
+            <label className="block mb-2 font-medium">Authors</label>
+            {editNews.author.map((a, i) => (
+              <div key={i} className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  placeholder={`Author ${i + 1}`}
+                  value={a}
+                  onChange={(e) => {
+                    const updated = [...editNews.author];
+                    updated[i] = e.target.value;
+                    setEditNews({ ...editNews, author: updated });
+                  }}
+                  className="flex-1 border p-2"
+                />
+                <button
+                  onClick={() => {
+                    const updated = editNews.author.filter(
+                      (_, index) => index !== i
+                    );
+                    setEditNews({ ...editNews, author: updated });
+                  }}
+                  className="text-red-500 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              className="text-blue-600 text-sm mb-2"
+              onClick={(e) => {
+                e.preventDefault();
+                setEditNews({ ...editNews, author: [...editNews.author, ""] });
+              }}
+            >
+              + Add Author
+            </button>
+
+            <label className="block mb-2 font-medium">Link</label>
+            <input
+              type="text"
+              placeholder="Link"
+              value={editNews.link}
+              onChange={(e) => setEditNews({ ...editNews, link: e.target.value })}
+              className="w-full border p-2 mb-2"
+            />
+
+            <label className="block mb-2 font-medium">Deskripsi</label>
+            <textarea
+              placeholder="Deskripsi"
+              value={editNews.description}
+              onChange={(e) =>
+                setEditNews({ ...editNews, description: e.target.value })
+              }
+              className="w-full border p-2 mb-2"
+            />
+
+            <div className="mb-2">
+              <label className="block font-medium mb-1">
+                Poster (opsional)
+              </label>
+              <div className="flex items-center gap-3">
+                <label className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer">
+                  Choose File
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      setEditNews({
+                        ...editNews,
+                        poster: e.target.files?.[0] || null,
+                      })
+                    }
+                  />
+                </label>
+                <span className="text-sm text-gray-700">
+                  {editNews.poster ? editNews.poster.name : "Keep current poster"}
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-2">
+              <label className="block font-medium mb-1">Cover</label>
+              <div className="flex items-center gap-3">
+                <label className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer">
+                  Choose File
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      setEditNews({
+                        ...editNews,
+                        cover: e.target.files?.[0] || null,
+                      })
+                    }
+                  />
+                </label>
+                <span className="text-sm text-gray-700">
+                  {editNews.cover ? editNews.cover.name : "Keep current cover"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowEditPopup(false)}
+                className="text-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Save Changes
               </button>
             </div>
           </div>
