@@ -4,6 +4,7 @@ import AppPortal from "@/components/portalApps";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import VisitorGraph from "@/components/visitorGraph";
+import FinanceInfo from "@/components/financeInfo";
 import Navbar from "@/components/navbar";
 import News from "@/components/News";
 import Quotes from "@/components/Quotes";
@@ -88,6 +89,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center justify-between h-full">
               <PrayerSchedule />
               <VisitorGraph />
+              <FinanceInfo />
             </div>
           </div>
         </div>

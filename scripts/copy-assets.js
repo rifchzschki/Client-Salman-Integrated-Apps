@@ -1,4 +1,4 @@
-import pkg from 'fs-extra';
+import pkg from "fs-extra";
 const { copySync } = pkg;
 import { resolve } from "path";
 import { fileURLToPath } from "url";
