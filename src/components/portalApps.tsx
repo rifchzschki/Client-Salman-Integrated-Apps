@@ -1,5 +1,6 @@
 "use client";
 
+import { link } from "fs";
 import {
   FaGithub,
   FaYoutube,
@@ -13,57 +14,63 @@ import {
 
 const apps = [
   {
-    name: "GitHub",
+    name: "Masjid Salman ITB",
     icon: <FaGithub size={32} />,
     color: "bg-gray-800 text-white",
+    link: "https://salmanitb.com/",
   },
   {
-    name: "YouTube",
+    name: "Jurnal Salman",
     icon: <FaYoutube size={32} />,
     color: "bg-red-600 text-white",
+    link: "https://jurnal.salmanitb.com/JSI",
   },
   {
-    name: "Twitter",
+    name: "BMKA",
     icon: <FaTwitter size={32} />,
     color: "bg-blue-500 text-white",
+    link: "https://kaderisasi.salmanitb.com/",
   },
   {
-    name: "Facebook",
+    name: "Salman Reading Corner",
     icon: <FaFacebook size={32} />,
     color: "bg-blue-700 text-white",
+    link: "https://www.salmanreadingcorner.web.id/",
   },
   {
-    name: "Google",
-    icon: <FaGoogle size={32} />,
-    color: "bg-yellow-500 text-white",
+    name: "OHU",
+    icon: <FaFacebook size={32} />,
+    color: "bg-blue-700 text-white",
+    link: "https://ohu.salmanitb.com/#/",
   },
   {
-    name: "Slack",
-    icon: <FaSlack size={32} />,
-    color: "bg-purple-500 text-white",
+    name: "Rumah Amal",
+    icon: <FaFacebook size={32} />,
+    color: "bg-blue-700 text-white",
+    link: "https://rumahamal.org/",
   },
+  ,
   {
-    name: "Trello",
-    icon: <FaTrello size={32} />,
-    color: "bg-blue-600 text-white",
-  },
-  {
-    name: "Spotify",
-    icon: <FaSpotify size={32} />,
-    color: "bg-green-500 text-white",
+    name: "Wakaf",
+    icon: <FaFacebook size={32} />,
+    color: "bg-blue-700 text-white",
+    link: "https://www.wakafsalman.or.id/",
   },
 ];
 
 const AppPortal = () => {
+  const openLink = (link: string) => {
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
       {apps.map((app, index) => (
         <div
+          onClick={() => openLink(app.link)}
           key={index}
           className={`flex flex-col items-center justify-center p-4 rounded-lg shadow-md hover:scale-105 transition-transform cursor-pointer ${app.color}`}
         >
-          {app.icon}
-          <span className="mt-2 text-sm font-medium">{app.name}</span>
+          <span className="mt-2 text-sm font-medium text-center">{app.name}</span>
         </div>
       ))}
     </div>
