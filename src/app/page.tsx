@@ -19,11 +19,11 @@ export default function HomePage() {
             <AppPortal />
           </div>
         </div>
-        <FinanceInfo />
       </section>
       <section className="w-1/3 flex flex-col space-y-6">
         <PrayerSchedule />
         <VisitorGraph />
+        <FinanceInfo />
       </section>
     </main>
   );
