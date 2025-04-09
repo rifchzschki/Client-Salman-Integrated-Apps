@@ -41,8 +41,8 @@ export default function News() {
     try {
       const url = query ? `/api/news?search=${query}` : nextPageUrl;
       const response = await fetch(url);
-      const data = (await response.json()).data;
-
+      const data = (await response.json());
+      console.log(data)
       setNews(query ? data : [...new Set([...news, ...data])]);
       setNextPageUrl(data.next_page_url);
     } catch (error) {
