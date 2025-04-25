@@ -79,7 +79,9 @@ export default function HomePage() {
             </div>
           </div>
           <div className="w-1/3">
-            <div className="flex flex-col items-center justify-between h-full gap-3">
+            <div className="flex flex-col items-center justify-between h-full gap-y-4">
+              <PrayerSchedule />
+              <VisitorGraph />
               <FinanceInfo />
               <VisitorGraph />
             </div>

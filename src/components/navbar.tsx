@@ -94,8 +94,11 @@ const Navbar = () => {
               Informasi Zakat
             </li>
             <li className="hover:text-gray-300 cursor-pointer">Acara</li>
-            <li className="hover:text-gray-300 cursor-pointer">
-              Forum Diskusi
+            <li
+                className="hover:text-gray-300 cursor-pointer"
+                onClick={() => router.push("/discussion")}
+            >
+                Forum Diskusi
             </li>
             <li className="hover:text-red-400 cursor-pointer" onClick={handleLogout}>Logout</li>
           </ul>
