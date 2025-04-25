@@ -57,18 +57,11 @@ export default function HomePage() {
             <div className="flex flex-col items-center justify-center px-10">
               <ImageCardList />
             </div>
-            {/* <div className="flex flex-col items-center justify-center">
-              <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
-                <AppPortal />
-              </div>
-            </div> */}
           </div>
           <div className="w-1/3">
             <div className="flex flex-col gap-3 items-center justify-between">
-              {/* <PrayerSchedule /> */}
               <PrayerSchedule />
               <Quotes />
-              {/* <VisitorGraph /> */}
             </div>
           </div>
         </div>
