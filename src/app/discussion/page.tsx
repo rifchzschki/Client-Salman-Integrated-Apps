@@ -15,25 +15,27 @@ export default function DiscussionPage() {
   const user = { id: 1, name: 'Alice', role: 'user' as 'user' }; // mock user
 
   useEffect(() => {
-    getDiscussions().then(setDiscussions);
-  }, []);
+    getDiscussions().then(res => setDiscussions(res.data));
+  });
 
   const handlePost = async (content: string) => {
     await postDiscussion(content);
     const updated = await getDiscussions();
-    setDiscussions(updated);
+    setDiscussions(updated.data);
   };
-
+  
   const handleDelete = async (id: number) => {
     await deleteDiscussion(id);
-    setDiscussions(await getDiscussions());
+    const updated = await getDiscussions();
+    setDiscussions(updated.data);
   };
-
+  
   const handleEdit = async (discussion: any) => {
     const newContent = prompt('Edit your post', discussion.content);
     if (newContent !== null) {
       await editDiscussion(discussion.id, newContent);
-      setDiscussions(await getDiscussions());
+      const updated = await getDiscussions();
+      setDiscussions(updated.data);
     }
   };
 
