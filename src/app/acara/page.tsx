@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar";
 import React, { useState, MouseEvent } from "react";
 
 type EventItem = {
@@ -21,8 +21,18 @@ const firstDayOfMonth = (year: number, month: number): number =>
   new Date(year, month, 1).getDay(); // 0 = Sunday
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function Calendar() {
@@ -130,7 +140,7 @@ export default function Calendar() {
           {/* Tanggal + Event */}
           {dateGrid.map((day, idx) => {
             if (day === null) {
-              return <div key={`empty-${idx}`} className="row-span-2"/>;
+              return <div key={`empty-${idx}`} className="row-span-2" />;
             }
             const dateKey = `${selectedYear}-${selectedMonth + 1}-${day}`;
             return (
