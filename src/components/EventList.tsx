@@ -22,6 +22,9 @@ const EventList = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [lengthEvent, setLengthEvent] = useState(0);
+  const [dateError, setDateError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
 
   // State untuk mengontrol form popup
   const [showAddEventPopup, setShowAddEventPopup] = useState(false);
@@ -77,19 +80,65 @@ const EventList = () => {
       value = (e.target as HTMLInputElement).checked;
     } else if (type === "file") {
       value = (e.target as HTMLInputElement).files?.[0] || null;
+
+      if (value.type !== "image/jpeg" && value.type !== "image/png") {
+        alert("Hanya file JPG atau PNG yang diperbolehkan!");
+        e.target.value = ""; 
+        return;
+      }
     } else {
       value = e.target.value;
     }
   
-    setFormData((prev) => ({
-      ...prev,
+    const updatedFormData = {
+      ...formData,
       [name]: value,
-    }));
+    };
+  
+    // Validasi tanggal saat start_time atau end_time berubah
+    if ((name === "start_time" || name === "end_time") &&
+        updatedFormData.start_time && updatedFormData.end_time) {
+      const start = new Date(updatedFormData.start_time);
+      const end = new Date(updatedFormData.end_time);
+      if (end < start) {
+        setDateError("Waktu selesai tidak boleh lebih awal dari waktu mulai.");
+      } else {
+        setDateError(null);
+      }
+    }
+  
+    setFormData(updatedFormData);
   };
 
   // Submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: { [key: string]: boolean } = {};
+    const requiredFields = ["title", "description", "start_time", "end_time", "cover_image", "is_online"];
+
+    requiredFields.forEach((field) => {
+      const value = formData[field as keyof typeof formData];
+      if (!value || (typeof value === "string" && value.trim() === "")) {
+        newErrors[field] = true;
+      }
+    });
+
+    // Validasi tanggal juga
+    if (
+      formData.start_time &&
+      formData.end_time &&
+      new Date(formData.end_time) < new Date(formData.start_time)
+    ) {
+      newErrors.end_time = true;
+      setDateError("Waktu selesai tidak boleh lebih awal dari waktu mulai.");
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return; // Stop submit jika ada error
+    }
+
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -151,7 +200,7 @@ const EventList = () => {
             { label: "Penyelenggara", name: "organizer", type: "text" },
             { label: "Link", name: "link", type: "url" },
             { label: "Gambar Cover", name: "cover_image", type: "file" }, 
-            { label: "Poster (Upload)", name: "poster", type: "file" },   
+            { label: "Poster", name: "poster", type: "file" },   
           ].map((field) => (
             <div className="mb-4" key={field.name}>
               <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
@@ -163,18 +212,17 @@ const EventList = () => {
                   name={field.name}
                   value={formData[field.name as keyof typeof formData] as string || ""}
                   onChange={handleInputChange}
-                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  className={`mt-1 p-2 w-full border border-gray-300 rounded-md ${errors[field.name] ? "border-red-500" : "border-gray-300"}`}
                   rows={3}
-                  required
                 />
               ) : field.type === "file" ? (
                 <input
                   type="file"
                   id={field.name}
                   name={field.name}
+                  accept="image/jpeg, image/png"
                   onChange={handleInputChange}
-                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  required={field.name !== "poster"}
+                  className={`mt-1 p-2 w-full border border-gray-300 rounded-md ${errors[field.name] ? "border-red-500" : "border-gray-300"}`}
                 />
               ) : (
                 <input
@@ -183,9 +231,14 @@ const EventList = () => {
                   name={field.name}
                   value={formData[field.name as keyof typeof formData] as string || ""}
                   onChange={handleInputChange}
-                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  required={field.name !== "link"}
+                  className={`mt-1 p-2 w-full border border-gray-300 rounded-md ${errors[field.name] ? "border-red-500" : "border-gray-300"}`}
                 />
+              )}
+              {field.name === "end_time" && dateError && (
+                <p className="text-sm text-red-600 mt-1">{dateError}</p>
+              )}
+              {errors[field.name] && (
+                <p className="text-sm text-red-600 mt-1">Field ini wajib diisi.</p>
               )}
             </div>
           ))}
