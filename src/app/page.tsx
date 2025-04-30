@@ -17,29 +17,29 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
 
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
+  //   // if (!token) {
+  //   //   router.replace("/login");
+  //   //   return;
+  //   // }
 
-    fetch("http://localhost:8000/api/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-        .then((res) => {
-          if (!res.ok) throw new Error("Unauthorized");
-          return res.json();
-        })
-        .then((data) => setUser(data))
-        .catch(() => router.replace("/login"))
-        .finally(() => setLoading(false));
-  }, [router]);
+  //   fetch("http://localhost:8000/api/me", {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //       .then((res) => {
+  //         if (!res.ok) throw new Error("Unauthorized");
+  //         return res.json();
+  //       })
+  //       .then((data) => setUser(data))
+  //       .catch(() => router.replace("/login"))
+  //       .finally(() => setLoading(false));
+  // }, [router]);
 
-  if (loading) return null;
+  // if (loading) return null;
   return (
     <main className="flex flex-col w-full p-0 m-0 bg-cream snap-y snap-mandatory overflow-y-scroll h-dvh">
       <section className="h-dvh snap-start snap-always">
@@ -90,6 +90,7 @@ export default function HomePage() {
               <PrayerSchedule />
               <VisitorGraph />
               <FinanceInfo />
+              <VisitorGraph />
             </div>
           </div>
         </div>
