@@ -62,19 +62,23 @@ const AppPortal = () => {
   const openLink = (link: string) => {
     window.open(link, "_blank", "noopener,noreferrer");
   };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-      {apps.map((app, index) => (
-        <div
-          onClick={() => openLink(app.link)}
-          key={index}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg shadow-md hover:scale-105 transition-transform cursor-pointer ${app.color}`}
-        >
-          <span className="mt-2 text-sm font-medium text-center">{app.name}</span>
-        </div>
-      ))}
+      {apps.map((app, index) =>
+        app ? (
+          <div
+            key={index}
+            onClick={() => openLink(app.link)}
+            className={`flex flex-col items-center justify-center p-4 rounded-lg shadow-md hover:scale-105 transition-transform cursor-pointer ${app.color}`}
+          >
+            <span className="mt-2 text-sm font-medium text-center">{app.name}</span>
+          </div>
+        ) : null
+      )}
     </div>
   );
 };
+
 
 export default AppPortal;

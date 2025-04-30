@@ -14,6 +14,7 @@ export default function Register() {
     });
 
     const [error, setError] = useState('');
+    const [errors, setErrors] = useState<Partial<typeof form>>({});
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -34,9 +35,33 @@ export default function Register() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    const validatePassword = (password: string) => {
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasNonAlphanumeric = /[^a-zA-Z0-9]/.test(password);
+        const isLongEnough = password.length >= 8;
+        return hasUpperCase && hasNonAlphanumeric && isLongEnough;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setErrors({});
+
+        const newErrors: Partial<typeof form> = {};
+
+        if (!form.first_name.trim()) newErrors.first_name = 'First name is required';
+        if (!form.last_name.trim()) newErrors.last_name = 'Last name is required';
+        if (!form.email.trim()) newErrors.email = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Email is invalid';
+        if (!form.password) newErrors.password = 'Password is required';
+        else if (!validatePassword(form.password)) newErrors.password = 'Password must be at least 8 characters, contain one uppercase letter and one special character';
+        if (!form.confirm_password) newErrors.confirm_password = 'Please confirm your password';
+        else if (form.password !== form.confirm_password) newErrors.confirm_password = 'Passwords do not match';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
 
         try {
             const res = await fetch("http://localhost:8000/api/register", {
@@ -71,15 +96,21 @@ export default function Register() {
                     <h1 className="text-3xl text-black">Sign up</h1>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4 items-center justify-center w-full">
                         {["first_name", "last_name", "email", "password", "confirm_password"].map((field) => (
-                            <input
-                                key={field}
-                                type={field.toLowerCase().includes("password") ? "password" : "text"}
-                                name={field}
-                                placeholder={field.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
-                                value={(form as any)[field]}
-                                onChange={handleChange}
-                                className="w-[80%] h-12 px-3 border-2 border-d-brown rounded-lg placeholder-d-brown font-medium bg-transparent outline-none"
-                            />
+                            <div key={field} className="w-[80%] flex flex-col gap-1">
+                                <input
+                                    type={field.toLowerCase().includes("password") ? "password" : "text"}
+                                    name={field}
+                                    placeholder={field.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                                    value={(form as any)[field]}
+                                    onChange={handleChange}
+                                    className={`w-full h-12 px-3 border-2 ${
+                                        errors[field as keyof typeof form] ? 'border-red-500' : 'border-d-brown'
+                                    } rounded-lg placeholder-d-brown font-medium bg-transparent outline-none`}
+                                />
+                                {errors[field as keyof typeof form] && (
+                                    <p className="text-red-500 text-sm">{errors[field as keyof typeof form]}</p>
+                                )}
+                            </div>
                         ))}
                         {error && <p className="text-red-600">{error}</p>}
                         <button

@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/Navbar";
 import React, { useState, MouseEvent } from "react";
 
 type EventItem = {
@@ -21,8 +21,18 @@ const firstDayOfMonth = (year: number, month: number): number =>
   new Date(year, month, 1).getDay(); // 0 = Sunday
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function Calendar() {
@@ -61,14 +71,13 @@ export default function Calendar() {
 
   const onEventClick = (e: MouseEvent<HTMLDivElement>, ev: EventItem): void => {
     e.stopPropagation();
-    const event = e.currentTarget;
-    const parentEvent = event.parentElement;
-    if (!parentEvent) return;
-    const rect = parentEvent.getBoundingClientRect();
+    const container = e.currentTarget.closest(".container-event");
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
     setPopup({
       show: true,
       event: ev,
-      pos: { top: rect.bottom, left: rect.left },
+      pos: { top: rect.top, left: rect.right },
     });
   };
 
@@ -131,15 +140,13 @@ export default function Calendar() {
           {/* Tanggal + Event */}
           {dateGrid.map((day, idx) => {
             if (day === null) {
-              return <div key={`empty-${idx}`} className="row-span-2"/>;
+              return <div key={`empty-${idx}`} className="row-span-2" />;
             }
-
-
             const dateKey = `${selectedYear}-${selectedMonth + 1}-${day}`;
             return (
               <div
                 key={dateKey}
-                className="row-span-2 border rounded p-2 w-full h-full relative bg-cream text-brown flex flex-col"
+                className="row-span-2 border rounded p-2 w-full h-full relative bg-cream text-brown flex flex-col container-event"
                 onClick={() => addEvent(dateKey)}
               >
                 <div className="flex justify-between text-sm">
