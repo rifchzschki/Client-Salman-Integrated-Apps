@@ -21,7 +21,13 @@ export default function DiscussionPage() {
   const handlePost = async (content: string) => {
     await postDiscussion(content);
     const updated = await getDiscussions();
-    setDiscussions(updated.data);
+    console.log(updated.data);
+    if (updated.status === 200) {
+      setDiscussions(updated.data);
+    }
+    else {
+      console.error('Failed to post discussion:', updated.error);
+    }
   };
   
   const handleDelete = async (id: number) => {
