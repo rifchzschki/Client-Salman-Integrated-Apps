@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavBar";
 import React, { useState, MouseEvent } from "react";
 
 type EventItem = {

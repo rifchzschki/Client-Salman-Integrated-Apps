@@ -1,6 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
+const SlIcon = dynamic(
+  () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 
 interface FinancialData {
     month: string;
@@ -101,9 +110,13 @@ const FinanceInfo = () => {
     }
 
     return (
-        <div className="flex flex-col items-center p-6 rounded-lg shadow-lg bg-white w-11/12 space-y-4">
-            <h1 className="text-2xl font-semibold mb-4">Informasi Keuangan</h1>
-            <p className="text-sm text-gray-600">Bulan {financialData.month} {financialData.year}</p>
+        <div className="flex flex-col p-4 pl-6 rounded-lg bg-white w-11/12 space-y-4">
+            <div className="flex justify-between">
+                <h1 className="text-2xl font-semibold mb-4">Informasi Keuangan</h1>
+                <p className="mt-2 mr-2 text-sm text-gray-600">{new Date().toLocaleString('id-ID', { month: 'long' })} {financialData.year}</p>
+            </div>
+            {/* <h1 className="self-start text-2xl font-semibold mb-4">Informasi Keuangan</h1>
+            <p className="self-start text-sm text-gray-600">Bulan {new Date().toLocaleString('id-ID', { month: 'long' })} {financialData.year}</p> */}
 
             <div className="flex flex-col items-center justify-between w-full space-y-3">
                 <div className="text-left w-full">
@@ -155,18 +168,18 @@ const FinanceInfo = () => {
                 </div>
             </div>
 
-            <div className="flex space-x-3 mt-4">
+            <div className="flex space-x-3 mt-4 bg-blue w-full justify-end">
                 {editMode ? (
                     <>
                         <button
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
                             onClick={handleSaveClick}
                             disabled={saving}
                         >
                             {saving ? "Menyimpan..." : "Simpan"}
                         </button>
                         <button
-                            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                            className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
                             onClick={handleCancelClick}
                             disabled={saving}
                         >
@@ -175,10 +188,10 @@ const FinanceInfo = () => {
                     </>
                 ) : (
                     <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        onClick={handleEditClick}
+                    className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
+                    onClick={handleEditClick}
                     >
-                        Edit
+                        <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
                     </button>
                 )}
             </div>

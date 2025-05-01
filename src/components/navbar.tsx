@@ -60,7 +60,7 @@ const Navbar = () => {
     fetchUser();
   }, []);
   return (
-    <nav className="bg-d-brown text-white px-6 py-4 flex items-center justify-between">
+    <nav className="bg-[#543310] text-white px-6 py-4 flex items-center justify-between">
       {/* Tombol Burger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -72,7 +72,7 @@ const Navbar = () => {
       {/* Logo dan Info User */}
       <div className="flex items-center space-x-4 cursor-pointer" onClick={() => router.push("/")}>
         <span className="text-sm font-medium">
-          {user ? `${user.first_name} ${user.last_name}` : "Loading..."}
+          {user ? `${user.first_name} ${user.last_name}` : "Guest"}
         </span>
         <img src="/Logo.svg" alt="Logo" className="h-8 w-8" />
       </div>

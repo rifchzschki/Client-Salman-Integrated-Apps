@@ -180,8 +180,8 @@ export default function News() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 space-y-6">
-      <div className="flex gap-4 items-center">
+    <div className="flex flex-col space-y-6">
+      <div className="flex gap-4 items-center justify-start">
         <input
           placeholder="Search news..."
           value={searchTerm}
@@ -191,9 +191,9 @@ export default function News() {
         {currentUserRole === "management" && (
           <button
             onClick={() => setShowAddPopup(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            + Add News
+            + Tambah Berita
           </button>
         )}
       </div>

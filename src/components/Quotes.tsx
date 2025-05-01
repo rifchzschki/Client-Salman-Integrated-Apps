@@ -83,17 +83,17 @@ const Quotes = () => {
 
   return (
     <>
-      <div className="w-11/12 h-70 p-4 bg-white rounded-lg shadow-lg flex flex-col">
-        <h5 className="text-sm font-bold mb-4"># Daily Quotes</h5>
-        <p className="text-justify min-h-[80px] flex items-center">
+      <div className="w-11/12 h-70 p-4 pl-6 bg-white rounded-lg flex flex-col">
+        <h5 className="text-xl font-bold -mb-1">Daily Quotes</h5>
+        <p className="pl-2 min-h-[80px] flex items-center">
           {quotes.length > 0 ? quotes[currentIndex] : "Loading..."}
         </p>
         <div className="w-full flex justify-end items-end h-full">
           <button
             onClick={() => setOpen(true)}
-            className="bg-amber-200 border border-slate-300 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
+            className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
           >
-            <SlIcon name="pencil" label="Edit"></SlIcon>
+            <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
           </button>
         </div>
       </div>

@@ -123,9 +123,20 @@
 }
 
 @layer base {
+  /* Apply Geist font to all elements */
+  html {
+    font-family: var(--font-geist-sans);
+  }
+  
+  /* Apply Geist mono to code elements */
+  code, pre, kbd {
+    font-family: var(--font-geist-mono);
+  }
+  
   * {
     @apply border-border outline-ring/50;
   }
+  
   body {
     @apply bg-background text-foreground;
   }
@@ -141,4 +152,3 @@
 *::-webkit-scrollbar {
   display: none;
 }
-

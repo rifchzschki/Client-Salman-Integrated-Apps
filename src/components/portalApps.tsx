@@ -16,44 +16,43 @@ const apps = [
   {
     name: "Masjid Salman ITB",
     icon: <FaGithub size={32} />,
-    color: "bg-gray-800 text-white",
+    color: "bg-[#854411] text-white", // Deep brown (matches header)
     link: "https://salmanitb.com/",
   },
   {
     name: "Jurnal Salman",
     icon: <FaYoutube size={32} />,
-    color: "bg-red-600 text-white",
+    color: "bg-[#854411] text-white", // Lighter brown
     link: "https://jurnal.salmanitb.com/JSI",
   },
   {
     name: "BMKA",
     icon: <FaTwitter size={32} />,
-    color: "bg-blue-500 text-white",
+    color: "bg-[#854411] text-white", // Soft terracotta
     link: "https://kaderisasi.salmanitb.com/",
   },
   {
     name: "Salman Reading Corner",
     icon: <FaFacebook size={32} />,
-    color: "bg-blue-700 text-white",
+    color: "bg-[#854411] text-white", // Darker brown
     link: "https://www.salmanreadingcorner.web.id/",
   },
   {
     name: "OHU",
     icon: <FaFacebook size={32} />,
-    color: "bg-blue-700 text-white",
+    color: "bg-[#854411] text-white", // Warm brown
     link: "https://ohu.salmanitb.com/#/",
   },
   {
     name: "Rumah Amal",
     icon: <FaFacebook size={32} />,
-    color: "bg-blue-700 text-white",
+    color: "bg-[#854411] text-white", // Muted brownish-purple
     link: "https://rumahamal.org/",
   },
-  ,
   {
     name: "Wakaf",
     icon: <FaFacebook size={32} />,
-    color: "bg-blue-700 text-white",
+    color: "bg-[#854411] text-white", // Soft rusty brown
     link: "https://www.wakafsalman.or.id/",
   },
 ];
@@ -70,7 +69,7 @@ const AppPortal = () => {
           <div
             key={index}
             onClick={() => openLink(app.link)}
-            className={`flex flex-col items-center justify-center p-4 rounded-lg shadow-md hover:scale-105 transition-transform cursor-pointer ${app.color}`}
+            className={`flex flex-col items-center justify-center p-4 rounded-lg hover:scale-105 transition-transform cursor-pointer ${app.color}`}
           >
             <span className="mt-2 text-sm font-medium text-center">{app.name}</span>
           </div>
