@@ -27,10 +27,18 @@ export async function postDiscussion(content: string) {
 }
   
 export async function deleteDiscussion(id: number) {
-    await fetch(`${API_URL}/discussions/${id}`, {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_URL}/discussions/${id}`, {
         method: 'DELETE',
-        credentials: 'include',
-      });
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to delete discussion');
+    }
 }
   
 export async function editDiscussion(id: number, content: string) {
@@ -43,5 +51,5 @@ export async function editDiscussion(id: number, content: string) {
         },
         credentials: 'include',
         body: JSON.stringify({ content }),
-      });
+    });
 }

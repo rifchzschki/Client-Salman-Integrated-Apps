@@ -10,6 +10,7 @@ import {
   deleteDiscussion,
   editDiscussion,
 } from "@/lib/api/discussions";
+import PopUp from "@/components/popUp";
 import { UserContext } from "@/contexts/UserContext";
 import Navbar from "@/components/navbar";
 import PrayerSchedule from "@/components/prayerTimes";
@@ -19,6 +20,9 @@ export default function DiscussionPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [discussions, setDiscussions] = useState([]);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [toDeleteId, setToDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,11 +41,16 @@ export default function DiscussionPage() {
         if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
-      .then((data) => setUser(data))
+      .then((data) =>{ 
+        setUser(data);
+        return getDiscussions();
+      })
+      .then((res) => {
+        if (res) setDiscussions(res.data);
+      })
       .catch(() => router.replace("/login"))
       .finally(() => setLoading(false));
-    getDiscussions().then((res) => setDiscussions(res.data));
-  });
+  }, []);
 
   const handlePost = async (content: string) => {
     await postDiscussion(content);
@@ -61,13 +70,25 @@ export default function DiscussionPage() {
     setDiscussions(updated.data);
   };
 
-  const handleEdit = async (discussion: any) => {
-    const newContent = prompt("Edit your post", discussion.content);
-    if (newContent !== null) {
-      await editDiscussion(discussion.id, newContent);
+  const handleRequestDelete = (id: number) => {
+    setToDeleteId(id);
+    setConfirmOpen(true);
+  };
+  
+  const handleConfirmDelete = async () => {
+    if (toDeleteId !== null) {
+      await deleteDiscussion(toDeleteId);
       const updated = await getDiscussions();
       setDiscussions(updated.data);
     }
+    setConfirmOpen(false);
+    setToDeleteId(null);
+  };
+
+  const handleEdit = async (id: number, newContent: string) => {
+    await editDiscussion(id, newContent);
+    const updated = await getDiscussions();
+    setDiscussions(updated.data);
   };
 
   return (
@@ -82,8 +103,14 @@ export default function DiscussionPage() {
             <DiscussionInput onPost={handlePost} />
             <DiscussionList
               discussions={discussions}
-              onDelete={handleDelete}
+              onDelete={handleRequestDelete}
               onEdit={handleEdit}
+            />
+            <PopUp
+              isOpen={confirmOpen}
+              onConfirm={handleConfirmDelete}
+              onCancel={() => setConfirmOpen(false)}
+              message="Apakah Anda yakin ingin menghapus diskusi ini?"
             />
           </div>
           <div className="w-1/3 gap-y-4">
