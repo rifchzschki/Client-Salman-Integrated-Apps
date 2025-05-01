@@ -6,11 +6,11 @@ import Quotes from "@/components/Quotes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import EventList from "@/components/EventList";
-import PrayerSchedule from "@/components/PrayerTimes";
-import AppPortal from "@/components/PortalApps";
-import FinanceInfo from "@/components/FinanceInfo";
-import VisitorGraph from "@/components/VisitorGraph";
-import Navbar from "@/components/Navbar";
+import PrayerSchedule from "@/components/prayerTimes";
+import AppPortal from "@/components/portalApps";
+import FinanceInfo from "@/components/financeInfo";
+import VisitorGraph from "@/components/visitorGraph";
+import Navbar from "@/components/navbar";
 
 export default function HomePage() {
   const router = useRouter();
