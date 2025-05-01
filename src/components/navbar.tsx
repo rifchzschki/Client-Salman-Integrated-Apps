@@ -107,7 +107,7 @@ const Navbar = () => {
             </li>
             <li
               className="hover:text-gray-300 cursor-pointer"
-              onClick={() => router.push("/discussion")}
+              onClick={() => router.push("/diskusi")}
             >
               Forum Diskusi
             </li>

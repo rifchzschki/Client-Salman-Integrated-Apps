@@ -14,7 +14,7 @@ export default function DiscussionInput({ onPost }: { onPost: (content: string) 
     <div className="bg-white p-4 rounded-xl shadow">
       <textarea
         className="w-full p-2 border border-gray-300 rounded"
-        placeholder="Write your discussion here..."
+        placeholder="Ketik diskusi Anda di sini..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />

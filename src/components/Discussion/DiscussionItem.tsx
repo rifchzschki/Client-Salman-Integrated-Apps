@@ -8,7 +8,7 @@ export default function DiscussionItem({ discussion, onDelete, onEdit }: any) {
   return (
     <div className="bg-white p-4 rounded-xl shadow space-y-2">
       <p className="text-sm text-gray-500">
-        <strong>{discussion.author}</strong> - {discussion.timestamp}
+        <strong>{discussion.author}</strong> - {discussion.created_at}
       </p>
       <p>{discussion.content}</p>
 

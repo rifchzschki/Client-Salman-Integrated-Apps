@@ -1,24 +1,25 @@
 const API_URL = 'http://localhost:8000/api';
 
 export async function getDiscussions() {
+    const token = localStorage.getItem("token");
     const res = await fetch(`${API_URL}/discussions`, {
-        method: 'GET', 
-        credentials: 'include' 
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
     });
-    console.log(res);
-    if (!res.ok) {
-        throw new Error('Failed to fetch discussions');
-    } else {
-        console.log('Discussions fetched successfully');
-        console.log(res.json());
-    }
     return res.json();
 }
   
 export async function postDiscussion(content: string) {
+    const token = localStorage.getItem("token");
     await fetch(`${API_URL}/discussions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         credentials: 'include',
         body: JSON.stringify({ content }),
       });
@@ -33,9 +34,13 @@ export async function deleteDiscussion(id: number) {
 }
   
 export async function editDiscussion(id: number, content: string) {
+    const token = localStorage.getItem("token");
     await fetch(`${API_URL}/discussions/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         credentials: 'include',
         body: JSON.stringify({ content }),
       });
