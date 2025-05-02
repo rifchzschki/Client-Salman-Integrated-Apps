@@ -41,8 +41,8 @@ export default function DiscussionPage() {
         if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
-      .then((data) =>{ 
-        setUser(data);
+      .then((res) =>{ 
+        setUser(res.data);
         return getDiscussions();
       })
       .then((res) => {
@@ -55,19 +55,12 @@ export default function DiscussionPage() {
   const handlePost = async (content: string) => {
     await postDiscussion(content);
     const updated = await getDiscussions();
-    console.log(updated.data);
     if (updated.status === 200) {
       setDiscussions(updated.data);
     }
     else {
       console.error('Failed to post discussion:', updated.error);
     }
-  };
-
-  const handleDelete = async (id: number) => {
-    await deleteDiscussion(id);
-    const updated = await getDiscussions();
-    setDiscussions(updated.data);
   };
 
   const handleRequestDelete = (id: number) => {
