@@ -25,6 +25,7 @@ const Quotes = () => {
 
   const [quotes, setQuotes] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     fetchQuotes();
@@ -34,7 +35,14 @@ const Quotes = () => {
     if (quotes.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+      // Fade out
+      setIsVisible(false);
+      
+      // After fade out, change index and fade in
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+        setIsVisible(true);
+      }, 500); // Match this to your CSS transition duration
     }, 10000);
 
     return () => clearInterval(interval);
@@ -83,17 +91,23 @@ const Quotes = () => {
 
   return (
     <>
-      <div className="w-11/12 h-70 p-4 bg-white rounded-lg shadow-lg flex flex-col">
-        <h5 className="text-sm font-bold mb-4"># Daily Quotes</h5>
-        <p className="text-justify min-h-[80px] flex items-center">
+      <div className="w-11/12 h-70 p-4 pl-6 bg-white rounded-lg flex flex-col">
+        <h5 className="text-xl font-bold -mb-1">Daily Quotes</h5>
+        <p 
+          className={`
+            pl-2 min-h-[80px] flex items-center 
+            transition-opacity duration-500 
+            ${isVisible ? 'opacity-100' : 'opacity-0'}
+          `}
+        >
           {quotes.length > 0 ? quotes[currentIndex] : "Loading..."}
         </p>
         <div className="w-full flex justify-end items-end h-full">
           <button
             onClick={() => setOpen(true)}
-            className="bg-amber-200 border border-slate-300 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
+            className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
           >
-            <SlIcon name="pencil" label="Edit"></SlIcon>
+            <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
           </button>
         </div>
       </div>

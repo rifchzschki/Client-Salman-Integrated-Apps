@@ -47,7 +47,7 @@ const VisitorGraph = () => {
   }, []);
 
   return (
-    <div className="w-11/12 h-70 p-4 bg-white rounded-lg shadow-lg">
+    <div className="w-11/12 h-70 p-4 bg-white rounded-lg">
       <h5 className="text-sm font-bold mb-4">Pengunjung Salman Bulan Ini</h5>
       <ResponsiveContainer width="100%" height="80%">
         <LineChart data={data}>

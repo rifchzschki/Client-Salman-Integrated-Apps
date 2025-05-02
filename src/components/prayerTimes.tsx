@@ -37,27 +37,27 @@ const prayerIcon: {
   {
     name: "Subuh",
     nameTimings: "Fajr",
-    icon: <FaMoon className="text-blue-500" />,
+    icon: <FaMoon className="text-[#2C3E50] text-2xl" />,
   },
   {
     name: "Dzuhur",
     nameTimings: "Dhuhr",
-    icon: <FaSun className="text-yellow-500" />,
+    icon: <FaSun className="text-[#2C3E50] text-2xl" />,
   },
   {
     name: "Ashar",
     nameTimings: "Asr",
-    icon: <FaCloudSun className="text-orange-500" />,
+    icon: <FaCloudSun className="text-[#2C3E50] text-2xl" />,
   },
   {
     name: "Maghrib",
     nameTimings: "Maghrib",
-    icon: <FaCloud className="text-red-500" />,
+    icon: <FaCloud className="text-[#2C3E50] text-2xl" />,
   },
   {
     name: "Isya",
     nameTimings: "Isha",
-    icon: <FaCloudMoon className="text-indigo-500" />,
+    icon: <FaCloudMoon className="text-[#2C3E50] text-2xl" />,
   },
 ];
 
@@ -91,7 +91,7 @@ export default function PrayerSchedule() {
     const updateClock = () => {
       const now = new Date();
       setCurrentTime(
-        now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
       );
     };
     updateClock();
@@ -156,18 +156,18 @@ export default function PrayerSchedule() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 rounded-lg shadow-lg bg-white w-11/12">
-      <h1 className="text-2xl font-semibold mb-4">Jadwal Sholat</h1>
-      <p className="text-lg text-gray-600 mb-6">
+    <div className="flex flex-col items-start p-6 rounded-lg bg-white w-11/12 max-w-md mx-auto">
+      <h1 className="text-2xl font-semibold mb-4 text-[#1A2C4F]">Jadwal Sholat</h1>
+      <p className="text-lg text-[#1A2C4F] text-opacity-70 mb-6">
         Waktu Saat Ini: {currentTime}
       </p>
-      <div className="flex flex-col space-x-6 w-full">
+      <div className="flex flex-col w-full">
         {showAlert && (
           <SlAlert variant="warning" open className="w-full m-0 mb-4">
-            <SlIcon slot="icon" name="exclamation-triangle" />
-            <strong>Lokasi belum diberikan</strong>
+            <SlIcon slot="icon" name="exclamation-triangle" className="text-[#1A2C4F]" />
+            <strong className="text-[#1A2C4F]">Lokasi belum diberikan</strong>
             <br />
-            Mohon berikan izin lokasi untuk melihat jadwal sholat.
+            <span className="text-[#1A2C4F] text-opacity-80">Mohon berikan izin lokasi untuk melihat jadwal sholat.</span>
           </SlAlert>
         )}
         <div className="flex flex-row items-center justify-between">
@@ -176,16 +176,16 @@ export default function PrayerSchedule() {
               key={index}
               className="flex flex-col items-center justify-center"
             >
-              <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 shadow-md">
+              <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#A9BDDF] bg-opacity-30 shadow-md">
                 {prayer.icon}
               </div>
-              <p className="mt-2 text-gray-700 font-semibold">{prayer.name}</p>
+              <p className="mt-2 text-[#1A2C4F] font-semibold">{prayer.name}</p>
               {!showAlert ? (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#1A2C4F] text-opacity-70">
                   {findTimes(prayer.nameTimings)}
                 </p>
               ) : (
-                <p className="text-black">...</p>
+                <p className="text-[#1A2C4F]">...</p>
               )}
             </div>
           ))}
