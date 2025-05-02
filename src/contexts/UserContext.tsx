@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 interface User {
   id: number;
-  role: 'user' | 'admin';
+  role: 'jamaah' | 'manajemen';
   name: string;
 }
 
