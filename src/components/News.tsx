@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 
 interface NewsItem {
   news_id: number;
@@ -13,6 +14,14 @@ interface NewsItem {
   created_at: string;
   updated_at: string;
 }
+
+const SlIcon = dynamic(
+  () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 
 export default function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -54,7 +63,7 @@ export default function News() {
       const response = await fetch(url);
       const data = (await response.json());
       data.map((news: NewsItem) => {
-        news.author = JSON.parse(news.author);
+        news.author = JSON.parse(news.author); // ini ga error yak, dia interfacenya string[] tapi yg keambil masih string json jadi harus diparsing trus diself-assign lagi
       })
       console.log(data);
       setNews(query ? data : [...new Set([...news, ...data])]);
