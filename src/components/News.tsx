@@ -53,7 +53,10 @@ export default function News() {
       const url = query ? `/api/news?search=${query}` : nextPageUrl;
       const response = await fetch(url);
       const data = (await response.json());
-      console.log(data)
+      data.map((news: NewsItem) => {
+        news.author = JSON.parse(news.author);
+      })
+      console.log(data);
       setNews(query ? data : [...new Set([...news, ...data])]);
       setNextPageUrl(data.next_page_url);
     } catch (error) {
@@ -157,7 +160,20 @@ export default function News() {
     setShowEditPopup(true);
   };
 
-  const handleSaveEdit = () => {
+  const formatAuthor = (authors: string[]) => {
+    let formatAuthors = "";
+    authors.forEach((author: string, index) => {
+      if (index === 0) {
+        formatAuthors += author;
+      } else {
+        formatAuthors += " & " + author;
+      }
+    })
+    return formatAuthors;
+    // return typeof authors;
+  }
+
+  const handleSaveEdit = async () => {
     // Simple client-side update without backend calls
     setNews(
       news.map((item) => {
@@ -168,12 +184,48 @@ export default function News() {
             author: editNews.author,
             description: editNews.description,
             link: editNews.link,
-            // We're not updating the images in this client-side only implementation
           };
         }
         return item;
       })
     );
+
+    const formData = new FormData();
+    formData.append('_method', 'PATCH');
+    formData.append("title", editNews.title);
+    formData.append("link", editNews.link);
+    formData.append("description", editNews.description);
+
+    // Properly append author as JSON string
+    formData.append("author", JSON.stringify(editNews.author));
+
+    if (editNews.poster) formData.append("poster", editNews.poster);
+    if (editNews.cover) formData.append("cover", editNews.cover);
+
+    try {
+      // Better logging of FormData contents
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      const res = await fetch(`http://127.0.0.1:8000/api/news/${editingNewsId}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          'X-HTTP-Method-Override': 'PATCH'
+        }
+      });
+
+      // Log full response details
+      console.log('Full response:', res);
+      console.log('Status:', res.status);
+      console.log('Headers:', Object.fromEntries(res.headers.entries()));
+  
+      const responseText = await res.text();
+      console.log('Response text:', responseText);
+    } catch (err) {
+      console.error("Error updating news:", err);
+    }
     
     setShowEditPopup(false);
     setEditingNewsId(null);
@@ -197,8 +249,10 @@ export default function News() {
           </button>
         )}
       </div>
-      <div className="w-full flex flex-col gap-3 max-h-[300] overflow-y-auto scroll-snap-align-none">
-        {news.map((item) => (
+      <div className="w-full flex flex-col gap-3 max-h-[300px] overflow-x-auto scroll-smooth">
+        {news.map((item) => {
+          // console.log(typeof item.author, "test");
+          return (
           <motion.div key={item.news_id} whileHover={{ scale: 1.05 }}>
             <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10">
               <img
@@ -206,13 +260,13 @@ export default function News() {
                 alt={item.title}
                 className="w-1/3 h-auto object-cover rounded-lg"
               />
-              <div className="w-3/5 h-full">
+              <div className="w-3/5 h-full flex flex-col items-start ml-4">
                 <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-500">By {item.author}</p>
+                <p className="text-sm text-gray-500">By {formatAuthor(item.author)}</p>
                 <p className="text-gray-700">{item.description}</p>
                 <button
                   onClick={() => openLink(item.link)}
-                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                  className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                 >
                   Read More
                 </button>
@@ -235,7 +289,7 @@ export default function News() {
               )}
             </div>
           </motion.div>
-        ))}
+        )})}
       </div>
       {loading && <p className="text-gray-500">Loading more news...</p>}
 

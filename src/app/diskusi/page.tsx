@@ -12,8 +12,8 @@ import {
 } from "@/lib/api/discussions";
 import PopUp from "@/components/popUp";
 import { UserContext } from "@/contexts/UserContext";
-import Navbar from "@/components/navbar";
-import PrayerSchedule from "@/components/prayerTimes";
+import Navbar from "@/components/NavBar";
+import PrayerSchedule from "@/components/PrayerTimes";
 
 export default function DiscussionPage() {
   const router = useRouter();
