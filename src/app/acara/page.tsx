@@ -1,6 +1,8 @@
 "use client";
 import Navbar from "@/components/NavBar";
-import React, { useState, MouseEvent } from "react";
+import { useRouter } from "next/navigation";
+import React, {useState, MouseEvent, useEffect} from "react";
+import RoleGuard from "@/app/auth/RoleGuard";
 
 type EventItem = {
   id: number;
@@ -36,7 +38,10 @@ const monthNames = [
 ];
 
 export default function Calendar() {
+
   const now = new Date();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
 
@@ -50,6 +55,32 @@ export default function Calendar() {
     pos: { top: 0, left: 0 },
   });
 
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    fetch("http://localhost:8000/api/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+        .then((res) => {
+          if (!res.ok) throw new Error("Unauthorized");
+          return res.json();
+        })
+        .then((data) => setUser(data.data))
+        .catch(() => router.replace("/login"))
+        .finally(() => setLoading(false));
+  }, [router]);
+
+  const isManager = user && user.role === "manajemen";
   const addEvent = (date: string): void => {
     const title = prompt("Event title:");
     if (!title) return;
@@ -147,7 +178,11 @@ export default function Calendar() {
               <div
                 key={dateKey}
                 className="row-span-2 border rounded p-2 w-full h-full relative bg-cream text-brown flex flex-col container-event"
-                onClick={() => addEvent(dateKey)}
+                onClick={() => {
+                  if (isManager) {
+                    addEvent(dateKey);
+                  }
+                }}
               >
                 <div className="flex justify-between text-sm">
                   <span>{day}</span>
@@ -188,15 +223,18 @@ export default function Calendar() {
                 >
                   Edit
                 </button>
-                <button
-                  onClick={() => {
-                    deleteEvent(popup.event!.id);
-                    closePopup();
-                  }}
-                  className="px-2 py-1 rounded border border-brown text-brown"
-                >
-                  Delete
-                </button>
+                <RoleGuard allowedRoles={["manajemen"]}>
+                  <button
+                      onClick={() => {
+                        deleteEvent(popup.event!.id);
+                        closePopup();
+                      }}
+                      className="px-2 py-1 rounded border border-brown text-brown"
+                  >
+                    Delete
+                  </button>
+                </RoleGuard>
+
                 <button onClick={closePopup} className="px-2 py-1 rounded">
                   Close
                 </button>
