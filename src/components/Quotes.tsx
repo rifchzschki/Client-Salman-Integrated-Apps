@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import RoleGuard from "@/app/auth/RoleGuard";
 
 const SlIcon = dynamic(
   () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
@@ -102,14 +103,16 @@ const Quotes = () => {
         >
           {quotes.length > 0 ? quotes[currentIndex] : "Loading..."}
         </p>
-        <div className="w-full flex justify-end items-end h-full">
-          <button
-            onClick={() => setOpen(true)}
-            className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
-          >
-            <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
-          </button>
-        </div>
+        <RoleGuard allowedRoles={["manajemen"]}>
+          <div className="w-full flex justify-end items-end h-full">
+            <button
+              onClick={() => setOpen(true)}
+              className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
+            >
+              <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
+            </button>
+          </div>
+        </RoleGuard>
       </div>
 
       {/* Popup */}

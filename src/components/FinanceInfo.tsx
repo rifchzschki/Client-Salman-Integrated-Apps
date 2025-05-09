@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import RoleGuard from "@/app/auth/RoleGuard";
 
 const SlIcon = dynamic(
   () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
@@ -187,12 +188,14 @@ const FinanceInfo = () => {
                         </button>
                     </>
                 ) : (
-                    <button
-                    className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
-                    onClick={handleEditClick}
-                    >
-                        <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
-                    </button>
+                    <RoleGuard allowedRoles={["manajemen"]}>
+                        <button
+                            className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
+                            onClick={handleEditClick}
+                        >
+                            <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
+                        </button>
+                    </RoleGuard>
                 )}
             </div>
         </div>
