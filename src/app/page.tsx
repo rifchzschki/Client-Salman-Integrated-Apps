@@ -11,6 +11,7 @@ import AppPortal from "@/components/PortalApps";
 import FinanceInfo from "@/components/FinanceInfo";
 import VisitorGraph from "@/components/VisitorGraph";
 import Navbar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
 export default function HomePage() {
   const router = useRouter();
@@ -85,6 +86,9 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+      <section className="h-dvh snap-start snap-always">
+        <Footer />
       </section>
     </main>
   );
