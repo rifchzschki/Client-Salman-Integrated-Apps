@@ -13,6 +13,7 @@ import {
 import PopUp from "@/components/popUp";
 import { UserContext } from "@/contexts/UserContext";
 import Navbar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import PrayerSchedule from "@/components/PrayerTimes";
 
 export default function DiscussionPage() {
@@ -112,6 +113,7 @@ export default function DiscussionPage() {
             </div>
           </div>
         </div>
+        <Footer />
       </main>
     </UserContext.Provider>
   );

@@ -11,6 +11,7 @@ import {
 } from "@/lib/api/discussions";
 import { UserContext } from "@/contexts/UserContext";
 import Navbar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import PrayerSchedule from "@/components/PrayerTimes";
 import VisitorGraph from "@/components/VisitorGraph";
 import FinanceInfo from "@/components/FinanceInfo";
@@ -68,6 +69,7 @@ export default function DiscussionPage() {
             </div>
           </div>
         </div>
+        <Footer />
       </main>
     </UserContext.Provider>
   );

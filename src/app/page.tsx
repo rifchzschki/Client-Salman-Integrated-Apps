@@ -12,6 +12,8 @@ import FinanceInfo from "@/components/FinanceInfo";
 import VisitorGraph from "@/components/VisitorGraph";
 import Navbar from "@/components/NavBar";
 import ProtectedRoute from "@/app/auth/ProtectedRoute";
+import Footer from "@/components/Footer";
+
 
 export default function HomePage() {
   return (
@@ -60,9 +62,11 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </section>
-        </main>
-      </ProtectedRoute>
-
+        </section>
+        <section className="h-dvh snap-start snap-always">
+          <Footer />
+        </section>
+      </main>
+    </ProtectedRoute>
   );
 }

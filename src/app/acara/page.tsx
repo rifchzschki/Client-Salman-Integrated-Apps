@@ -3,6 +3,8 @@ import Navbar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
 import React, {useState, MouseEvent, useEffect} from "react";
 import RoleGuard from "@/app/auth/RoleGuard";
+import Footer from "@/components/Footer";
+
 
 type EventItem = {
   id: number;
@@ -243,6 +245,7 @@ export default function Calendar() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
