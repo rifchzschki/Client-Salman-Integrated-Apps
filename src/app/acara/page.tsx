@@ -1,5 +1,6 @@
 "use client";
 import Navbar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import React, { useState, MouseEvent } from "react";
 
 type EventItem = {
@@ -205,6 +206,7 @@ export default function Calendar() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
