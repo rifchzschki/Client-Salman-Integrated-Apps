@@ -10,9 +10,9 @@ import {
   deleteDiscussion,
   editDiscussion,
 } from "@/lib/api/discussions";
-import PopUp from "@/components/popUp";
+import PopUp from "@/components/PopUp";
 import { UserContext } from "@/contexts/UserContext";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Navbar";
 import PrayerSchedule from "@/components/PrayerTimes";
 
 export default function DiscussionPage() {
@@ -41,7 +41,7 @@ export default function DiscussionPage() {
         if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
-      .then((res) =>{ 
+      .then((res) => {
         setUser(res.data);
         return getDiscussions();
       })
@@ -57,9 +57,8 @@ export default function DiscussionPage() {
     const updated = await getDiscussions();
     if (updated.status === 200) {
       setDiscussions(updated.data);
-    }
-    else {
-      console.error('Failed to post discussion:', updated.error);
+    } else {
+      console.error("Failed to post discussion:", updated.error);
     }
   };
 
@@ -67,7 +66,7 @@ export default function DiscussionPage() {
     setToDeleteId(id);
     setConfirmOpen(true);
   };
-  
+
   const handleConfirmDelete = async () => {
     if (toDeleteId !== null) {
       await deleteDiscussion(toDeleteId);

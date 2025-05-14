@@ -10,7 +10,7 @@ import {
   editDiscussion,
 } from "@/lib/api/discussions";
 import { UserContext } from "@/contexts/UserContext";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Navbar";
 import PrayerSchedule from "@/components/PrayerTimes";
 import VisitorGraph from "@/components/VisitorGraph";
 import FinanceInfo from "@/components/FinanceInfo";

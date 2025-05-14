@@ -10,7 +10,7 @@ import PrayerSchedule from "@/components/PrayerTimes";
 import AppPortal from "@/components/PortalApps";
 import FinanceInfo from "@/components/FinanceInfo";
 import VisitorGraph from "@/components/VisitorGraph";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Navbar";
 
 export default function HomePage() {
   const router = useRouter();
