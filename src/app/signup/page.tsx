@@ -16,6 +16,15 @@ export default function Register() {
     const [error, setError] = useState('');
     const [errors, setErrors] = useState<Partial<typeof form>>({});
 
+    // untuk tampilan bahasa indonesia
+    const fieldPlaceholders: Record<string, string> = {
+        first_name: "Nama Depan",
+        last_name: "Nama Belakang",
+        email: "Email",
+        password: "Kata Sandi",
+        confirm_password: "Konfirmasi Kata Sandi"
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) return;
@@ -49,14 +58,14 @@ export default function Register() {
 
         const newErrors: Partial<typeof form> = {};
 
-        if (!form.first_name.trim()) newErrors.first_name = 'First name is required';
-        if (!form.last_name.trim()) newErrors.last_name = 'Last name is required';
-        if (!form.email.trim()) newErrors.email = 'Email is required';
-        else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Email is invalid';
-        if (!form.password) newErrors.password = 'Password is required';
-        else if (!validatePassword(form.password)) newErrors.password = 'Password must be at least 8 characters, contain one uppercase letter and one special character';
-        if (!form.confirm_password) newErrors.confirm_password = 'Please confirm your password';
-        else if (form.password !== form.confirm_password) newErrors.confirm_password = 'Passwords do not match';
+        if (!form.first_name.trim()) newErrors.first_name = 'Nama depan harus diisi';
+        if (!form.last_name.trim()) newErrors.last_name = 'Nama belakang harus diisi';
+        if (!form.email.trim()) newErrors.email = 'Email harus diisi';
+        else if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Email tidak valid';
+        if (!form.password) newErrors.password = 'Kata sandi harus diisi';
+        else if (!validatePassword(form.password)) newErrors.password = 'Kata sandi harus minimal 8 karakter, mengandung satu huruf kapital dan satu karakter spesial';
+        if (!form.confirm_password) newErrors.confirm_password = 'Harap konfirmasi kata sandi anda';
+        else if (form.password !== form.confirm_password) newErrors.confirm_password = 'Kata sandi tidak cocok';
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -93,14 +102,14 @@ export default function Register() {
                     <div className="flex justify-start items-start w-full pl-4">
                         <img src="/logo-salman.svg" className="w-17 h-17"/>
                     </div>
-                    <h1 className="text-3xl text-black">Sign up</h1>
+                    <h1 className="text-3xl text-black">Daftar</h1>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4 items-center justify-center w-full">
                         {["first_name", "last_name", "email", "password", "confirm_password"].map((field) => (
                             <div key={field} className="w-[80%] flex flex-col gap-1">
                                 <input
                                     type={field.toLowerCase().includes("password") ? "password" : "text"}
                                     name={field}
-                                    placeholder={field.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                                    placeholder={fieldPlaceholders[field]}
                                     value={(form as any)[field]}
                                     onChange={handleChange}
                                     className={`w-full h-12 px-3 border-2 ${
@@ -117,7 +126,7 @@ export default function Register() {
                             type="submit"
                             className="w-[80%] h-12 bg-l-brown font-medium text-bonewhite rounded-lg mt-2 hover:bg-l2-brown"
                         >
-                            Register
+                            Daftar
                         </button>
                     </form>
                     <p className="text-black">Sudah punya akun? <a href="/login" className="text-d-brown">Login</a></p>
