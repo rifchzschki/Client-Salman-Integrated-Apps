@@ -51,7 +51,7 @@ const Quotes = () => {
 
   const fetchQuotes = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/quotes");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quotes`);
       if (!response.ok) {
         throw new Error("Gagal mengambil quotes");
       }
@@ -66,7 +66,7 @@ const Quotes = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/quotes", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quotes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

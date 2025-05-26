@@ -44,7 +44,7 @@ const EventList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/events");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`);
         const data = await response.json();
         if (data.length > 0) {
           setLengthEvent(data.length);
@@ -172,7 +172,7 @@ const EventList = () => {
         form.append("poster", formData.poster);
       }
 
-      const response = await fetch("http://localhost:8000/api/events", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
         method: "POST",
         body: form,
       });

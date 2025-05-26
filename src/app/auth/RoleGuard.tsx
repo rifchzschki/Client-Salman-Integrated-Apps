@@ -16,7 +16,7 @@ export default function RoleGuard({ allowedRoles, children }) {
             return;
         }
 
-        fetch("http://localhost:8000/api/me", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",

@@ -14,7 +14,7 @@ export default function Login() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        fetch("http://localhost:8000/api/me", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -34,7 +34,7 @@ export default function Login() {
         setError('');
 
         try {
-            const res = await fetch("http://localhost:8000/api/login", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export default function Login() {
 
                         <button
                             onClick={() => {
-                                window.open('http://localhost:8000/api/auth/google', '_self');
+                                window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/google`, '_self');
                             }}
                             className="w-full h-12 bg-white text-black border border-d-brown mt-4 rounded-lg hover:bg-gray-100"
                         >

@@ -29,7 +29,7 @@ export default function Register() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        fetch("http://localhost:8000/api/me", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -73,7 +73,7 @@ export default function Register() {
         }
 
         try {
-            const res = await fetch("http://localhost:8000/api/register", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

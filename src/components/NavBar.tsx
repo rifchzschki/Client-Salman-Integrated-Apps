@@ -17,7 +17,7 @@ const Navbar = () => {
     if (!token) return;
 
     try {
-      await fetch("http://localhost:8000/api/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const Navbar = () => {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:8000/api/me", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
