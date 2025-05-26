@@ -15,12 +15,13 @@ import { UserContext } from "@/contexts/UserContext";
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import PrayerSchedule from "@/components/PrayerTimes";
+import { Discussion } from "@/types/types";
 
 export default function DiscussionPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [discussions, setDiscussions] = useState([]);
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [toDeleteId, setToDeleteId] = useState<number | null>(null);
@@ -51,7 +52,7 @@ export default function DiscussionPage() {
       })
       .catch(() => router.replace("/login"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   const handlePost = async (content: string) => {
     await postDiscussion(content);

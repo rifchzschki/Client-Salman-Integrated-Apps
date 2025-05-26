@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import RoleGuard from "@/app/auth/RoleGuard";
 
+interface Quote{
+  id: number,
+  content: string,
+  created_at: Date,
+  updated_at: Date
+}
+
 const SlIcon = dynamic(
   () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
   {
@@ -56,7 +63,7 @@ const Quotes = () => {
         throw new Error("Gagal mengambil quotes");
       }
       const data = await response.json();
-      const contents = data.map((item: any) => item.content); // asumsi response array of objects
+      const contents = data.map((item: Quote) => item.content); // asumsi response array of objects
       setQuotes(contents);
     } catch (error) {
       console.error(error);

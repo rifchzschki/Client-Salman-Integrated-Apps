@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-interface User {
+export interface User {
   id: number;
   role: 'jamaah' | 'manajemen';
   name: string;

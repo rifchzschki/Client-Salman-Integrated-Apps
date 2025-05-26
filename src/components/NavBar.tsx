@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,7 +75,7 @@ const Navbar = () => {
         <span className="text-sm font-medium">
           {user ? `${user.first_name} ${user.last_name}` : "Guest"}
         </span>
-        <img src="/Logo.svg" alt="Logo" className="h-8 w-8" />
+        <Image src="/Logo.svg" alt="Logo" className="h-8 w-8" />
       </div>
 
       {/* Sidebar */}

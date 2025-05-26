@@ -19,6 +19,19 @@ type Event = {
   poster: string;
 };
 
+type EventFormData = {
+  title: string;
+  description: string;
+  location: string;
+  start_time: string; // ISO string or date string
+  end_time: string;
+  organizer: string;
+  is_online: boolean;
+  link: string;
+  cover_image: File | null;
+  poster: File | null;
+};
+
 const EventList = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +79,7 @@ const EventList = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, type } = e.target;
   
-    let value: any;
+    let value: string | boolean | File | null;
   
     if (type === "checkbox") {
       value = (e.target as HTMLInputElement).checked;
@@ -330,7 +343,7 @@ const EventList = () => {
 type AddEventDialogProps = {
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  formData: any;
+  formData: EventFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   errors: { [key: string]: boolean };
   dateError: string | null;
