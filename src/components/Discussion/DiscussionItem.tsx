@@ -1,6 +1,7 @@
 import { useUser } from '@/contexts/UserContext';
 import { useEffect, useState, useRef } from 'react';
 import { MoreVertical } from 'lucide-react';
+import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/id';
@@ -61,7 +62,6 @@ export default function DiscussionItem({ discussion, onDelete, onEdit }: any) {
               className="p-1 rounded hover:bg-gray-100"
             >
               <MoreVertical className="w-5 h-5" />
-              {/* or: <span className="text-xl">⋮</span> */}
             </button>
 
             {menuOpen && (
@@ -93,6 +93,11 @@ export default function DiscussionItem({ discussion, onDelete, onEdit }: any) {
           </div>
         )}
       </div>
+      <Link href={`/diskusi/${discussion.id}`}>
+        <h2 className="text-xl font-semibold text-blue-600 hover:underline cursor-pointer">
+          {discussion.title}
+        </h2>
+      </Link>
       {isEditing ? (
         <textarea
         className="w-full border p-2 rounded"
@@ -100,7 +105,7 @@ export default function DiscussionItem({ discussion, onDelete, onEdit }: any) {
         onChange={(e) => setEditContent(e.target.value)}
         />
       ) : (
-        <p>{discussion.content}</p>
+        <p className="whitespace-pre-line">{discussion.content}</p>
       )}
       {isEditing && (
         <div className='text-right space-x-2'>
