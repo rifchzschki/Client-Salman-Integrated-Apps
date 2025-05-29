@@ -16,18 +16,6 @@ interface NewsItem {
   updated_at: string;
 }
 
-interface NewsItem {
-  news_id: number;
-  title: string;
-  author: string[];
-  description: string;
-  poster: string;
-  cover: string;
-  link: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export default function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState<string | null>(
@@ -58,34 +46,45 @@ export default function News() {
   const currentUserRole = "management";
   // untuk sementara pakai ini dulu sebelum bisa login
 
-  const fetchNews = useCallback ( async (query = "") => {
-    console.log("fetch");
-    if (!nextPageUrl || loading) return;
+  const fetchNews = useCallback(
+    async (query = "") => {
+      console.log("fetch");
+      if (!nextPageUrl || loading) return;
 
-    setLoading(true);
-    try {
-      const url = query ? `/api/news?search=${query}` : nextPageUrl;
-      const response = await fetch(url);
-      const data = await response.json();
-      data.map((news: NewsItem) => {
-        if (typeof news.author === "string") {
-          try {
-            news.author = JSON.parse(news.author);
-          } catch {
-            // Kalau gagal parse, biarkan tetap string saja atau kasih default array kosong
-            news.author = [];
+      setLoading(true);
+      try {
+        const url = query ? `/api/news?search=${query}` : nextPageUrl;
+        const response = await fetch(url);
+        const data = await response.json();
+        data.map((news: NewsItem) => {
+          if (typeof news.author === "string") {
+            try {
+              news.author = JSON.parse(news.author);
+            } catch {
+              // Kalau gagal parse, biarkan tetap string saja atau kasih default array kosong
+              news.author = [];
+            }
           }
-        }
-      });
-      console.log(data);
-      setNews((prevNews) => query ? data : [...new Set([...prevNews, ...data])]);
-      setNextPageUrl(data.next_page_url);
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [nextPageUrl, loading] );
+        });
+        console.log(data);
+        setNews((prevNews) => {
+          if (query) return data;
+          const existingIds = new Set(prevNews.map((item) => item.news_id));
+          const newItems = data.filter(
+            (item: NewsItem) => !existingIds.has(item.news_id)
+          );
+          return [...prevNews, ...newItems];
+        });
+        console.log("after setnews", news);
+        setNextPageUrl(data.next_page_url);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [nextPageUrl, loading]
+  );
 
   const handleScroll = useCallback(() => {
     if (
@@ -120,6 +119,8 @@ export default function News() {
     if (newNews.poster) formData.append("poster", newNews.poster);
     if (newNews.cover) formData.append("cover", newNews.cover);
 
+    console.log(newNews);
+    console.log(formData.get("author"));
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, {
         method: "POST",
@@ -127,6 +128,7 @@ export default function News() {
       });
 
       const data = await res.json();
+      console.log(data);
       if (res.ok) {
         setNews([data.news, ...news]);
         setShowAddPopup(false);
@@ -212,13 +214,13 @@ export default function News() {
     );
 
     const formData = new FormData();
-    formData.append("_method", "PATCH");
     formData.append("title", editNews.title);
     formData.append("link", editNews.link);
     formData.append("description", editNews.description);
 
     // Properly append author as JSON string
-    formData.append("author", JSON.stringify(editNews.author));
+    editNews.author.forEach((a, i) => formData.append(`author[${i}]`, a));
+    // formData.append("author", JSON.stringify(editNews.author));
 
     if (editNews.poster) formData.append("poster", editNews.poster);
     if (editNews.cover) formData.append("cover", editNews.cover);
@@ -255,6 +257,8 @@ export default function News() {
     setEditingNewsId(null);
   };
 
+  console.log(news);
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex gap-4 items-center justify-start">
@@ -280,9 +284,12 @@ export default function News() {
             <motion.div key={item.news_id} whileHover={{ scale: 1.05 }}>
               <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_URL}/storage/${item.cover}`}
+                  src={item.cover}
                   alt={item.title}
+                  width={150}
+                  height={150}
                   className="w-1/3 h-auto object-cover rounded-lg"
+                  unoptimized
                 />
                 <div className="w-3/5 h-full flex flex-col items-start ml-4">
                   <h3 className="text-xl font-semibold">{item.title}</h3>

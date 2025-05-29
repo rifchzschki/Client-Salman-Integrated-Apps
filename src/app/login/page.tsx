@@ -65,11 +65,12 @@ export default function Login() {
         <Image
           src="/masjid-salman-itb.jpg"
           alt="Masjid salman itb"
+          fill
           className="absolute min-w-[100%] min-h-[100%] object-cover z-0"
         />
         <div className="absolute w-[35%] h-[95%] flex flex-col items-center justify-start bg-bonewhite z-10 m-4 rounded-3xl overflow-auto">
           <div className="flex justify-start items-start w-full h-20 pl-4 pt-4">
-            <Image src="/logo-salman.svg" alt="logo salman itb" className="w-17 h-17" />
+            <Image src="/logo-salman.svg" alt="logo salman itb" width={17} height={17} className="w-17 h-17" />
           </div>
           <div>
             <h1 className="text-3xl text-black mt-15">Login</h1>

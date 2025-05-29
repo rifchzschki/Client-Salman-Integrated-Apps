@@ -75,7 +75,7 @@ const Navbar = () => {
         <span className="text-sm font-medium">
           {user ? `${user.first_name} ${user.last_name}` : "Guest"}
         </span>
-        <Image src="/Logo.svg" alt="Logo" className="h-8 w-8" />
+        <Image src="/Logo.svg" alt="Logo" width={8} height={8} className="h-8 w-8" />
       </div>
 
       {/* Sidebar */}

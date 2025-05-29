@@ -498,6 +498,22 @@ const AddEventDialog = ({
                   placeholder="Nama penyelenggara"
                 />
               </div>
+
+              {/* Link Acara */}
+              <div className="mb-4">
+                <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">
+                  Link
+                </label>
+                <input
+                  type="text"
+                  id="link"
+                  name="link"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  placeholder="Link Acara"
+                />
+              </div>
               
               {/* Is Online */}
               <div className="mb-4 flex items-center">

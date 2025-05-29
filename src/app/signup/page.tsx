@@ -117,11 +117,12 @@ export default function Register() {
         <Image
           src="/masjid-salman-itb.jpg"
           alt="Masjid Salman Itb"
+          fill
           className="absolute min-w-[100%] min-h-[100%] object-cover z-0"
         />
         <div className="absolute w-[35%] h-[95%] flex flex-col gap-4 items-center justify-start bg-bonewhite z-10 m-4 rounded-3xl overflow-auto px-4 pt-6">
           <div className="flex justify-start items-start w-full pl-4">
-            <Image src="/logo-salman.svg" alt="logo salman itb" className="w-17 h-17" />
+            <Image src="/logo-salman.svg" alt="logo salman itb" width={17} height={17} className="w-17 h-17" />
           </div>
           <h1 className="text-3xl text-black">Daftar</h1>
           <form

@@ -41,9 +41,11 @@ const EventCard: React.FC<EventCardProps> = ({
       {/* Image container with fixed width and height - scaled proportionally */}
       <div className="relative w-full h-[228px]">
         <Image
-          src={coverImage || "/default-cover.jpg"}
+          src={coverImage}
           alt={title}
+          fill
           className="absolute inset-0 w-full h-full object-cover rounded-t-2xl"
+          unoptimized
         />
       </div>
       
