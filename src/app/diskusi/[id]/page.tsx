@@ -74,10 +74,12 @@ export default function DiscussionDetailPage() {
           </div>
         ) : (
           <div className="flex-1 p-6 space-y-4 overflow-y-auto pb-5">
-            <MainDiscussion 
-              discussion={discussion} 
-              onReplying={() => setIsReplying(true)}
-            />
+            {discussion!=null && (
+              <MainDiscussion 
+                discussion={discussion} 
+                onReplying={() => setIsReplying(true)}
+              />
+            )}
 
             {isReplying && (
               <ReplyInput onReply={(content) => {
