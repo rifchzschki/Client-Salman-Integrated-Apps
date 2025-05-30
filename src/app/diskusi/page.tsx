@@ -54,8 +54,8 @@ export default function DiscussionPage() {
       .finally(() => setLoading(false));
   }, [router]);
 
-  const handlePost = async (content: string) => {
-    await postDiscussion(content);
+  const handlePost = async (title: string, content: string) => {
+    await postDiscussion(title, content);
     const updated = await getDiscussions();
     if (updated.status === 200) {
       setDiscussions(updated.data);
@@ -87,19 +87,41 @@ export default function DiscussionPage() {
 
   return (
     <UserContext.Provider value={{ user }}>
-      <main className="flex flex-col w-full p-0 snap-y snap-mandatory overflow-y-scroll bg-cream h-dvh">
+      <div className="min-h-screen flex flex-col bg-cream">
         <Navbar />
-        <div className="flex flex-1 p-6 gap-6">
-          <div className="flex-1 space-y-4 overflow-y-auto">
+        <main className="flex-1 flex p-6 gap-6">
+          <div className="flex-1 space-y-4 overflow-y-auto pb-5">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">
               Forum Diskusi
             </h1>
-            <DiscussionInput onPost={handlePost} />
-            <DiscussionList
-              discussions={discussions}
-              onDelete={handleRequestDelete}
-              onEdit={handleEdit}
-            />
+            <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800" onClick={() => setIsPosting(true)}>
+              Diskusi Baru
+            </button>
+            {isPosting && (
+              <DiscussionInput
+                onPost={(title, content) => {
+                  handlePost(title, content);
+                  setIsPosting(false);
+                }}
+              />
+            )}
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <p className="text-gray-500">Loading...</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {discussions.length === 0 ? (
+                  <p className="text-gray-500">Belum ada diskusi.</p>
+                ) : (
+                  <DiscussionList
+                    discussions={discussions}
+                    onDelete={handleRequestDelete}
+                    onEdit={handleEdit}
+                  />
+                )}
+              </div>
+            )}
             <PopUp
               isOpen={confirmOpen}
               onConfirm={handleConfirmDelete}
@@ -112,9 +134,9 @@ export default function DiscussionPage() {
               <PrayerSchedule />
             </div>
           </div>
-        </div>
-        <Footer />
-      </main>
+        </main>
+      </div>
+      <Footer />
     </UserContext.Provider>
   );
 }
