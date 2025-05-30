@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { postReply } from "@/lib/api/discussions";
 
 export default function ReplyInput({
   onReply,
