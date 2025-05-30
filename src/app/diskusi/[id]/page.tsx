@@ -13,7 +13,7 @@ import ReplyList from "@/components/Reply/replyList";
 
 export default function DiscussionDetailPage() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const numericId = parseInt(id as string, 10);
