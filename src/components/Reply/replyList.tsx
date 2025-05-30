@@ -8,7 +8,7 @@ interface ReplyListProps {
 export default function ReplyList({ replies }: ReplyListProps) {
     return (
         <div className="space-y-4">
-            {replies.map((reply: any) => (
+            {replies.map((reply: Reply) => (
                 <ReplyItem
                     key={reply.id}
                     reply={reply}
