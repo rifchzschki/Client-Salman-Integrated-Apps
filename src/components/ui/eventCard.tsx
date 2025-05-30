@@ -1,5 +1,6 @@
 import React from "react";
-import { MapPin, Calendar, Clock } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
+import Image from "next/image";
 
 type EventCardProps = {
   title: string;
@@ -32,17 +33,19 @@ const EventCard: React.FC<EventCardProps> = ({
       year: "numeric",
     });
 
-  const formatLocale = (datetime: string) => 
-    new Date(datetime).getUTCHours();
+  // const formatLocale = (datetime: string) => 
+  //   new Date(datetime).getUTCHours();
 
   return (
     <div className="rounded-2xl overflow-hidden border w-[240px] bg-white flex flex-col">
       {/* Image container with fixed width and height - scaled proportionally */}
       <div className="relative w-full h-[228px]">
-        <img
-          src={coverImage || "/default-cover.jpg"}
+        <Image
+          src={coverImage}
           alt={title}
+          fill
           className="absolute inset-0 w-full h-full object-cover rounded-t-2xl"
+          unoptimized
         />
       </div>
       
@@ -64,7 +67,7 @@ const EventCard: React.FC<EventCardProps> = ({
           <span>{formatTime(startTime)} - {formatTime(endTime)}</span>
         </div> */}
         
-        {/* <h1 className="text-xs">{description.slice(0, 50)}</h1> */}
+        <h1 className="text-xs">{description.slice(0, 50)}</h1>
       </div>
     </div>
   );

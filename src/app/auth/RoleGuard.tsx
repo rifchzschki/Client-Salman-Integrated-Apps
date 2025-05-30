@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "@/contexts/UserContext";
 
-export default function RoleGuard({ allowedRoles, children }) {
-    const [user, setUser] = useState(null);
+type RoleGuardProps = {
+  allowedRoles: string[];
+  children: React.ReactNode;
+};
+
+export default function RoleGuard({ allowedRoles, children } : RoleGuardProps) {
+    const [user, setUser] = useState<User|null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
@@ -16,7 +22,7 @@ export default function RoleGuard({ allowedRoles, children }) {
             return;
         }
 
-        fetch("http://localhost:8000/api/me", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
@@ -27,7 +33,7 @@ export default function RoleGuard({ allowedRoles, children }) {
                 return res.json();
             })
             .then((data) => {
-                console.log("User data:", data.data); // 👈 add this
+                console.log("User data:", data.data);
                 setUser(data.data);
             })
             .catch(() => router.replace("/login"))

@@ -1,57 +1,38 @@
 "use client";
 
-import { link } from "fs";
-import {
-  FaGithub,
-  FaYoutube,
-  FaTwitter,
-  FaFacebook,
-  FaGoogle,
-  FaSlack,
-  FaTrello,
-  FaSpotify,
-} from "react-icons/fa";
-
 const apps = [
   {
     name: "Masjid Salman ITB",
-    icon: <FaGithub size={32} />,
     color: "bg-[#854411] text-white", // Deep brown (matches header)
     link: "https://salmanitb.com/",
   },
   {
     name: "Jurnal Salman",
-    icon: <FaYoutube size={32} />,
     color: "bg-[#854411] text-white", // Lighter brown
     link: "https://jurnal.salmanitb.com/JSI",
   },
   {
     name: "BMKA",
-    icon: <FaTwitter size={32} />,
     color: "bg-[#854411] text-white", // Soft terracotta
     link: "https://kaderisasi.salmanitb.com/",
   },
   {
     name: "Salman Reading Corner",
-    icon: <FaFacebook size={32} />,
     color: "bg-[#854411] text-white", // Darker brown
     link: "https://www.salmanreadingcorner.web.id/",
   },
   {
     name: "OHU",
-    icon: <FaFacebook size={32} />,
     color: "bg-[#854411] text-white", // Warm brown
     link: "https://ohu.salmanitb.com/#/",
   },
   {
     name: "Rumah Amal",
-    icon: <FaFacebook size={32} />,
     color: "bg-[#854411] text-white", // Muted brownish-purple
     link: "https://rumahamal.org/",
   },
   {
     name: "Wakaf",
-    icon: <FaFacebook size={32} />,
     color: "bg-[#854411] text-white", // Soft rusty brown
     link: "https://www.wakafsalman.or.id/",
   },

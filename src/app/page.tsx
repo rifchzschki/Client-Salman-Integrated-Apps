@@ -3,8 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import News from "@/components/News";
 import Quotes from "@/components/Quotes";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import EventList from "@/components/EventList";
 import PrayerSchedule from "@/components/PrayerTimes";
 import AppPortal from "@/components/PortalApps";

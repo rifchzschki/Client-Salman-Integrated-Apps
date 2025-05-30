@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import RoleGuard from "@/app/auth/RoleGuard";
 
+interface Quote{
+  id: number,
+  content: string,
+  created_at: Date,
+  updated_at: Date
+}
+
 const SlIcon = dynamic(
   () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
   {
@@ -51,12 +58,12 @@ const Quotes = () => {
 
   const fetchQuotes = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/quotes");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quotes`);
       if (!response.ok) {
         throw new Error("Gagal mengambil quotes");
       }
       const data = await response.json();
-      const contents = data.map((item: any) => item.content); // asumsi response array of objects
+      const contents = data.map((item: Quote) => item.content); // asumsi response array of objects
       setQuotes(contents);
     } catch (error) {
       console.error(error);
@@ -66,7 +73,7 @@ const Quotes = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/quotes", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quotes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,11 +99,11 @@ const Quotes = () => {
 
   return (
     <>
-      <div className="w-11/12 h-70 p-4 pl-6 bg-white rounded-lg flex flex-col">
-        <h5 className="text-xl font-bold -mb-1">Daily Quotes</h5>
+      <div className="w-11/12 p-4 pl-6 bg-white rounded-lg flex flex-col">
+        <h5 className="text-xl font-bold my-2">Daily Quotes</h5>
         <p 
           className={`
-            pl-2 min-h-[80px] flex items-center 
+            py-2 min-h-[80px] flex items-center 
             transition-opacity duration-500 
             ${isVisible ? 'opacity-100' : 'opacity-0'}
           `}
@@ -104,7 +111,7 @@ const Quotes = () => {
           {quotes.length > 0 ? quotes[currentIndex] : "Loading..."}
         </p>
         <RoleGuard allowedRoles={["manajemen"]}>
-          <div className="w-full flex justify-end items-end h-full">
+          <div className="w-full flex justify-end">
             <button
               onClick={() => setOpen(true)}
               className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"

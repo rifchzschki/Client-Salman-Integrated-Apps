@@ -1,10 +1,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ProtectedRoute({ children }) {
+type ProtectedRouteProps = {
+  children: React.ReactNode;
+};
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    const [, setUser] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -14,7 +18,7 @@ export default function ProtectedRoute({ children }) {
             return;
         }
 
-        fetch("http://localhost:8000/api/me", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

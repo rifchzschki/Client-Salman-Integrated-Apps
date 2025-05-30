@@ -10,18 +10,18 @@ import {
   deleteDiscussion,
   editDiscussion,
 } from "@/lib/api/discussions";
-import PopUp from "@/components/popUp";
+import PopUp from "@/components/PopUp";
 import { UserContext } from "@/contexts/UserContext";
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import PrayerSchedule from "@/components/PrayerTimes";
+import { Discussion } from "@/types/types";
 
 export default function DiscussionPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [discussions, setDiscussions] = useState([]);
-  const [isPosting, setIsPosting] = useState(false);
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [toDeleteId, setToDeleteId] = useState<number | null>(null);
@@ -34,7 +34,7 @@ export default function DiscussionPage() {
       return;
     }
 
-    fetch("http://localhost:8000/api/me", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -43,7 +43,7 @@ export default function DiscussionPage() {
         if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
-      .then((res) =>{ 
+      .then((res) => {
         setUser(res.data);
         return getDiscussions();
       })
@@ -52,16 +52,15 @@ export default function DiscussionPage() {
       })
       .catch(() => router.replace("/login"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   const handlePost = async (title: string, content: string) => {
     await postDiscussion(title, content);
     const updated = await getDiscussions();
     if (updated.status === 200) {
       setDiscussions(updated.data);
-    }
-    else {
-      console.error('Failed to post discussion:', updated.error);
+    } else {
+      console.error("Failed to post discussion:", updated.error);
     }
   };
 
@@ -69,7 +68,7 @@ export default function DiscussionPage() {
     setToDeleteId(id);
     setConfirmOpen(true);
   };
-  
+
   const handleConfirmDelete = async () => {
     if (toDeleteId !== null) {
       await deleteDiscussion(toDeleteId);

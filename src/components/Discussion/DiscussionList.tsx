@@ -1,9 +1,16 @@
+import { Discussion } from '@/types/types';
 import DiscussionItem from './DiscussionItem';
 
-export default function DiscussionList({ discussions, onDelete, onEdit }: any) {
+interface DiscussionsProps {
+  discussions: Discussion[];
+  onDelete: (id: number) => void;
+  onEdit: (id: number, newContent: string) => Promise<void>;
+}
+
+export default function DiscussionList({ discussions, onDelete, onEdit }: DiscussionsProps) {
   return (
     <div className="space-y-4">
-      {discussions.map((discussion: any) => (
+      {discussions.map((discussion: Discussion) => (
         <DiscussionItem
           key={discussion.id}
           discussion={discussion}

@@ -11,27 +11,41 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 
-
+interface visitorData {
+  date: Date;
+  amount: number;
+}
 const VisitorGraph = () => {
-  const monthNames = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchVisitors = async () => {
       try {
+        const monthNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
         const today = new Date();
         const month = monthNames[today.getMonth()];
         const year = today.getFullYear();
 
         const response = await fetch(
-          `http://127.0.0.1:8000/api/visitors?month=${month}&year=${year}`, {method: "GET"}
+          `${process.env.NEXT_PUBLIC_API_URL}/visitors?month=${month}&year=${year}`,
+          { method: "GET" }
         );
         const json = await response.json();
-        
-        const formattedData = json.map((item: any) => ({
+
+        const formattedData = json.map((item: visitorData) => ({
           date: item.date,
           frequency: item.amount,
         }));

@@ -5,10 +5,17 @@ import Link from 'next/link';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/id';
+import { Discussion } from '@/types/types';
 dayjs.extend(relativeTime);
 dayjs.locale('id');
 
-export default function DiscussionItem({ discussion, onDelete, onEdit }: any) {
+interface DiscussionItemProps {
+  discussion: Discussion;
+  onDelete: (id: number) => void;
+  onEdit: (id: number, newContent: string) => Promise<void>;
+}
+
+export default function DiscussionItem({ discussion, onDelete, onEdit }: DiscussionItemProps) {
   const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(discussion.content);

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, {useState, MouseEvent, useEffect} from "react";
 import RoleGuard from "@/app/auth/RoleGuard";
 import Footer from "@/components/Footer";
+import { User } from "@/contexts/UserContext";
 
 
 type EventItem = {
@@ -42,8 +43,8 @@ const monthNames = [
 export default function Calendar() {
 
   const now = new Date();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User|null>(null);
+  const [, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
 
@@ -67,7 +68,7 @@ export default function Calendar() {
       return;
     }
 
-    fetch("http://localhost:8000/api/me", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",

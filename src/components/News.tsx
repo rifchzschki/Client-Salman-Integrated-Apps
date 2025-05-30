@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import RoleGuard from "@/app/auth/RoleGuard";
+import Image from "next/image";
 
 interface NewsItem {
   news_id: number;
@@ -16,18 +16,10 @@ interface NewsItem {
   updated_at: string;
 }
 
-const SlIcon = dynamic(
-  () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
-  {
-    loading: () => <p>Loading...</p>,
-    ssr: false,
-  }
-);
-
 export default function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState<string | null>(
-    "http://127.0.0.1:8000/api/news"
+    `${process.env.NEXT_PUBLIC_API_URL}/news`
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -54,42 +46,60 @@ export default function News() {
   const currentUserRole = "management";
   // untuk sementara pakai ini dulu sebelum bisa login
 
-  const fetchNews = async (query = "") => {
-    console.log("fetch");
-    if (!nextPageUrl || loading) return;
+  const fetchNews = useCallback(
+    async (query = "") => {
+      console.log("fetch");
+      if (!nextPageUrl || loading) return;
 
-    setLoading(true);
-    try {
-      const url = query ? `/api/news?search=${query}` : nextPageUrl;
-      const response = await fetch(url);
-      const data = (await response.json());
-      data.map((news: NewsItem) => {
-        news.author = JSON.parse(news.author); // ini ga error yak, dia interfacenya string[] tapi yg keambil masih string json jadi harus diparsing trus diself-assign lagi
-      })
-      console.log(data);
-      setNews(query ? data : [...new Set([...news, ...data])]);
-      setNextPageUrl(data.next_page_url);
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+      try {
+        const url = query ? `/api/news?search=${query}` : nextPageUrl;
+        const response = await fetch(url);
+        const data = await response.json();
+        data.map((news: NewsItem) => {
+          if (typeof news.author === "string") {
+            try {
+              news.author = JSON.parse(news.author);
+            } catch {
+              // Kalau gagal parse, biarkan tetap string saja atau kasih default array kosong
+              news.author = [];
+            }
+          }
+        });
+        console.log(data);
+        setNews((prevNews) => {
+          if (query) return data;
+          const existingIds = new Set(prevNews.map((item) => item.news_id));
+          const newItems = data.filter(
+            (item: NewsItem) => !existingIds.has(item.news_id)
+          );
+          return [...prevNews, ...newItems];
+        });
+        console.log("after setnews", news);
+        setNextPageUrl(data.next_page_url);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [nextPageUrl, loading]
+  );
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 50 &&
       !loading
     ) {
       fetchNews();
     }
-  };
+  }, [fetchNews, loading]);
 
   useEffect(() => {
     fetchNews();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [fetchNews, handleScroll]);
 
   useEffect(() => {
     if (searchTerm) {
@@ -98,7 +108,7 @@ export default function News() {
       }, 500);
       return () => clearTimeout(delayDebounceFn);
     }
-  }, [searchTerm]);
+  }, [searchTerm, fetchNews]);
 
   const handleAddNews = async () => {
     const formData = new FormData();
@@ -109,13 +119,16 @@ export default function News() {
     if (newNews.poster) formData.append("poster", newNews.poster);
     if (newNews.cover) formData.append("cover", newNews.cover);
 
+    console.log(newNews);
+    console.log(formData.get("author"));
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/news", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, {
         method: "POST",
         body: formData,
       });
 
       const data = await res.json();
+      console.log(data);
       if (res.ok) {
         setNews([data.news, ...news]);
         setShowAddPopup(false);
@@ -138,7 +151,7 @@ export default function News() {
   const handleDeleteNews = async (id: number) => {
     if (!confirm("Are you sure you want to delete this news item?")) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/news/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -178,10 +191,10 @@ export default function News() {
       } else {
         formatAuthors += " & " + author;
       }
-    })
+    });
     return formatAuthors;
     // return typeof authors;
-  }
+  };
 
   const handleSaveEdit = async () => {
     // Simple client-side update without backend calls
@@ -201,45 +214,50 @@ export default function News() {
     );
 
     const formData = new FormData();
-    formData.append('_method', 'PATCH');
     formData.append("title", editNews.title);
     formData.append("link", editNews.link);
     formData.append("description", editNews.description);
 
     // Properly append author as JSON string
-    formData.append("author", JSON.stringify(editNews.author));
+    editNews.author.forEach((a, i) => formData.append(`author[${i}]`, a));
+    // formData.append("author", JSON.stringify(editNews.author));
 
     if (editNews.poster) formData.append("poster", editNews.poster);
     if (editNews.cover) formData.append("cover", editNews.cover);
 
     try {
       // Better logging of FormData contents
-      for (let [key, value] of formData.entries()) {
+      for (const [key, value] of formData.entries()) {
         console.log(key, value);
       }
 
-      const res = await fetch(`http://127.0.0.1:8000/api/news/${editingNewsId}`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          'X-HTTP-Method-Override': 'PATCH'
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/news/${editingNewsId}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            "X-HTTP-Method-Override": "PATCH",
+          },
         }
-      });
+      );
 
       // Log full response details
-      console.log('Full response:', res);
-      console.log('Status:', res.status);
-      console.log('Headers:', Object.fromEntries(res.headers.entries()));
-  
+      console.log("Full response:", res);
+      console.log("Status:", res.status);
+      console.log("Headers:", Object.fromEntries(res.headers.entries()));
+
       const responseText = await res.text();
-      console.log('Response text:', responseText);
+      console.log("Response text:", responseText);
     } catch (err) {
       console.error("Error updating news:", err);
     }
-    
+
     setShowEditPopup(false);
     setEditingNewsId(null);
   };
+
+  console.log(news);
 
   return (
     <div className="flex flex-col space-y-6">
@@ -251,54 +269,61 @@ export default function News() {
           className="w-80 border-2 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <RoleGuard allowedRoles={["manajemen"]}>
-          <button onClick={() => setShowAddPopup(true)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <button
+            onClick={() => setShowAddPopup(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
             + Tambah Berita
           </button>
         </RoleGuard>
-
       </div>
       <div className="w-full flex flex-col gap-3 max-h-[300px] overflow-x-auto scroll-smooth">
         {news.map((item) => {
           // console.log(typeof item.author, "test");
           return (
-          <motion.div key={item.news_id} whileHover={{ scale: 1.05 }}>
-            <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10">
-              <img
-                src={`http://127.0.0.1:8000/storage/${item.cover}`}
-                alt={item.title}
-                className="w-1/3 h-auto object-cover rounded-lg"
-              />
-              <div className="w-3/5 h-full flex flex-col items-start ml-4">
-                <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-500">By {formatAuthor(item.author)}</p>
-                <p className="text-gray-700">{item.description}</p>
-                <button
-                  onClick={() => openLink(item.link)}
-                  className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                >
-                  Read More
-                </button>
-              </div>
-              {currentUserRole === "management" && (
-                <div className="flex flex-col gap-2">
+            <motion.div key={item.news_id} whileHover={{ scale: 1.05 }}>
+              <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10">
+                <Image
+                  src={item.cover}
+                  alt={item.title}
+                  width={150}
+                  height={150}
+                  className="w-1/3 h-auto object-cover rounded-lg"
+                  unoptimized
+                />
+                <div className="w-3/5 h-full flex flex-col items-start ml-4">
+                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <p className="text-sm text-gray-500">
+                    By {formatAuthor(item.author)}
+                  </p>
+                  <p className="text-gray-700">{item.description}</p>
                   <button
-                    onClick={() => handleDeleteNews(item.news_id)}
-                    className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 self-start"
+                    onClick={() => openLink(item.link)}
+                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                   >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => handleEditClick(item)}
-                    className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 self-start"
-                  >
-                    Edit
+                    Read More
                   </button>
                 </div>
-              )}
-            </div>
-          </motion.div>
-        )})}
+                {currentUserRole === "management" && (
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => handleDeleteNews(item.news_id)}
+                      className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 self-start"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => handleEditClick(item)}
+                      className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 self-start"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
       {loading && <p className="text-gray-500">Loading more news...</p>}
 
@@ -499,7 +524,9 @@ export default function News() {
               type="text"
               placeholder="Link"
               value={editNews.link}
-              onChange={(e) => setEditNews({ ...editNews, link: e.target.value })}
+              onChange={(e) =>
+                setEditNews({ ...editNews, link: e.target.value })
+              }
               className="w-full border p-2 mb-2"
             />
 
@@ -533,7 +560,9 @@ export default function News() {
                   />
                 </label>
                 <span className="text-sm text-gray-700">
-                  {editNews.poster ? editNews.poster.name : "Keep current poster"}
+                  {editNews.poster
+                    ? editNews.poster.name
+                    : "Keep current poster"}
                 </span>
               </div>
             </div>

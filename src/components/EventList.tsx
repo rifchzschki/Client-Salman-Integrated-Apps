@@ -19,6 +19,19 @@ type Event = {
   poster: string;
 };
 
+type EventFormData = {
+  title: string;
+  description: string;
+  location: string;
+  start_time: string; // ISO string or date string
+  end_time: string;
+  organizer: string;
+  is_online: boolean;
+  link: string;
+  cover_image: File | null;
+  poster: File | null;
+};
+
 const EventList = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +57,7 @@ const EventList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/events");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`);
         const data = await response.json();
         if (data.length > 0) {
           setLengthEvent(data.length);
@@ -66,7 +79,7 @@ const EventList = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, type } = e.target;
   
-    let value: any;
+    let value: string | boolean | File | null;
   
     if (type === "checkbox") {
       value = (e.target as HTMLInputElement).checked;
@@ -172,7 +185,7 @@ const EventList = () => {
         form.append("poster", formData.poster);
       }
 
-      const response = await fetch("http://localhost:8000/api/events", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
         method: "POST",
         body: form,
       });
@@ -330,7 +343,7 @@ const EventList = () => {
 type AddEventDialogProps = {
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  formData: any;
+  formData: EventFormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   errors: { [key: string]: boolean };
   dateError: string | null;
@@ -483,6 +496,22 @@ const AddEventDialog = ({
                   onChange={handleInputChange}
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                   placeholder="Nama penyelenggara"
+                />
+              </div>
+
+              {/* Link Acara */}
+              <div className="mb-4">
+                <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">
+                  Link
+                </label>
+                <input
+                  type="text"
+                  id="link"
+                  name="link"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  placeholder="Link Acara"
                 />
               </div>
               

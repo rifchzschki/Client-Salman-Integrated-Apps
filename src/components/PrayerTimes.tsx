@@ -82,8 +82,8 @@ interface PrayerTimes {
 
 export default function PrayerSchedule() {
   const [currentTime, setCurrentTime] = useState("");
-  const [location, setLocation] = useState<Location | null>(null);
-  const [error, setError] = useState<string>("");
+  const [, setLocation] = useState<Location | null>(null);
+  const [, setError] = useState<string>("");
   const [prayerTimes, setPrayerTimes] = useState<PrayerTimes | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -144,8 +144,12 @@ export default function PrayerSchedule() {
       if (result.status === "OK") {
         setPrayerTimes(result.data.timings);
       }
-    } catch (err) {
-      setError("Terjadi kesalahan mengambil data waktu sholat");
+    } catch (err: unknown) {
+      if(err instanceof Error){
+        setError(`Terjadi kesalahan mengambil data waktu sholat ${err.message}`)
+      }else{
+        setError("Terjadi kesalahan mengambil data waktu sholat");
+      }
     }
   };
 
