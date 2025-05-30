@@ -83,7 +83,7 @@ export default function News() {
         setLoading(false);
       }
     },
-    [nextPageUrl, loading]
+    [nextPageUrl, loading, news]
   );
 
   const handleScroll = useCallback(() => {
