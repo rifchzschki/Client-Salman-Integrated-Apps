@@ -50,7 +50,7 @@ export default function DiscussionDetailPage() {
     })
     .catch(() => router.replace("/login"))
     .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, numericId, router]);
 
   const handleReply = async (content: string) => {
     await postReply(numericId, content);
