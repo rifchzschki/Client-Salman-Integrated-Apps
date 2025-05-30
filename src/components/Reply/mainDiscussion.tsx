@@ -1,7 +1,13 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
+import { Discussion } from '@/types/types';
 
-export default function MainDiscussion({discussion, onReplying} : any) {
+interface MainDiscussionProps {
+    discussion: Discussion;
+    onReplying: () => void;
+}
+
+export default function MainDiscussion({discussion, onReplying} : MainDiscussionProps) {
     const formattedCreated_at = discussion.created_at ? dayjs(discussion.created_at).format('D MMMM YYYY HH:mm') : null;
     const formattedUpdated_at = discussion.updated_at ? dayjs(discussion.updated_at).format('D MMMM YYYY HH:mm') : null;
 

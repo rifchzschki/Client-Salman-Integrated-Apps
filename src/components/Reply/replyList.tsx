@@ -1,6 +1,11 @@
 import ReplyItem from "./replyItem";
+import { Reply } from "@/types/types";
 
-export default function ReplyList({ replies }: any) {
+interface ReplyListProps {
+    replies: Reply[];
+}
+
+export default function ReplyList({ replies }: ReplyListProps) {
     return (
         <div className="space-y-4">
             {replies.map((reply: any) => (

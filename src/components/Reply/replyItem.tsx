@@ -1,4 +1,10 @@
-export default function ReplyItem({ reply }: any) {
+import { Reply } from '@/types/types';
+
+interface ReplyItemProps {
+    reply: Reply;
+}
+
+export default function ReplyItem({ reply }: ReplyItemProps) {
     const formattedCreatedAt = reply.created_at ? new Date(reply.created_at).toLocaleString() : null;
 
     return (
