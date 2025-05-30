@@ -19,9 +19,11 @@ import { Discussion } from "@/types/types";
 
 export default function DiscussionPage() {
   const router = useRouter();
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
+  const [isPosting, setIsPosting] = useState(false);
+
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [toDeleteId, setToDeleteId] = useState<number | null>(null);
