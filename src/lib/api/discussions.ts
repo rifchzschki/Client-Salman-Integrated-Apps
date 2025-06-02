@@ -67,7 +67,7 @@ export const getDiscussionDetail = async (id: number) => {
 };
 
 export const postReply = async (discussionId: number, content: string) => {
-  const res = await fetch(`http://localhost:8000/api/discussions/${discussionId}/reply`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/discussions/${discussionId}/reply`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
