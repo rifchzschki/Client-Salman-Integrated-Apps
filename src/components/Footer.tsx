@@ -24,7 +24,9 @@ const Footer: React.FC = () => {
         {/* QRIS Donasi */}
         <div className="flex flex-col items-start">
           <p className="mt-6 font-bold mb-2">Qris Donasi:</p>
-          <div className="w-32 h-32 bg-gray-300" /> {/* nanti ganti ini dengan QRnya */}
+            <div className="w-32 h-32 relative">
+              <Image src="/qris-donasi.png" alt="QRIS Donasi" fill className="border rounded" />
+            </div>
         </div>
       </div>
 
