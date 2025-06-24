@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import RoleGuard from "@/app/auth/RoleGuard";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
 
 interface NewsItem {
   news_id: number;
@@ -17,6 +18,8 @@ interface NewsItem {
 }
 
 export default function News() {
+  const {user} = useUser();
+  const isAdmin = user && user.role === 'manajemen';
   const [news, setNews] = useState<NewsItem[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState<string | null>(
     `${process.env.NEXT_PUBLIC_API_URL}/news`
@@ -43,8 +46,7 @@ export default function News() {
     cover: null as File | null,
   });
 
-  const currentUserRole = "management";
-  // untuk sementara pakai ini dulu sebelum bisa login
+  const currentUserRole = isAdmin;
 
   const fetchNews = useCallback(
     async (query = "") => {
@@ -304,7 +306,7 @@ export default function News() {
                     Read More
                   </button>
                 </div>
-                {currentUserRole === "management" && (
+                {currentUserRole && (
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={() => handleDeleteNews(item.news_id)}

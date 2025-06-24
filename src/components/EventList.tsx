@@ -2,8 +2,16 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import EventCard from "@/components/ui/eventCard"; // Adjust path as needed
 // Import icons from Lucide React
-import { ChevronLeft, ChevronRight, Plus, X, Calendar, MapPin } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  X,
+  Calendar,
+  MapPin,
+} from "lucide-react";
 import RoleGuard from "@/app/auth/RoleGuard";
+import { User, useUser } from "@/contexts/UserContext";
 
 type Event = {
   id: number;
@@ -39,7 +47,8 @@ const EventList = () => {
   const [showAddEventPopup, setShowAddEventPopup] = useState(false);
   const [dateError, setDateError] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-  
+  const { user } = useUser();
+  const isAdmin = user && user.role === "manajemen";
   // Form state
   const [formData, setFormData] = useState({
     title: "",
@@ -57,7 +66,9 @@ const EventList = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/events`
+        );
         const data = await response.json();
         if (data.length > 0) {
           setLengthEvent(data.length);
@@ -76,11 +87,13 @@ const EventList = () => {
   }, []);
 
   // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, type } = e.target;
-  
+
     let value: string | boolean | File | null;
-  
+
     if (type === "checkbox") {
       value = (e.target as HTMLInputElement).checked;
     } else if (type === "file") {
@@ -88,21 +101,24 @@ const EventList = () => {
 
       if (value && value.type !== "image/jpeg" && value.type !== "image/png") {
         alert("Hanya file JPG atau PNG yang diperbolehkan!");
-        e.target.value = ""; 
+        e.target.value = "";
         return;
       }
     } else {
       value = e.target.value;
     }
-  
+
     const updatedFormData = {
       ...formData,
       [name]: value,
     };
-  
+
     // Validasi tanggal saat start_time atau end_time berubah
-    if ((name === "start_time" || name === "end_time") &&
-        updatedFormData.start_time && updatedFormData.end_time) {
+    if (
+      (name === "start_time" || name === "end_time") &&
+      updatedFormData.start_time &&
+      updatedFormData.end_time
+    ) {
       const start = new Date(updatedFormData.start_time);
       const end = new Date(updatedFormData.end_time);
       if (end < start) {
@@ -111,7 +127,7 @@ const EventList = () => {
         setDateError(null);
       }
     }
-  
+
     setFormData(updatedFormData);
   };
 
@@ -185,10 +201,13 @@ const EventList = () => {
         form.append("poster", formData.poster);
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
-        method: "POST",
-        body: form,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events`,
+        {
+          method: "POST",
+          body: form,
+        }
+      );
 
       if (response.ok) {
         const newEvent = await response.json();
@@ -216,7 +235,6 @@ const EventList = () => {
   const eventPages = chunkArray(events, 3);
   const totalPages = eventPages.length;
 
-
   if (loading) {
     return <div className="text-center py-10">Loading events...</div>;
   }
@@ -224,21 +242,22 @@ const EventList = () => {
   if (lengthEvent === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-xl font-semibold">Tidak ada kegiatan terdekat bulan ini</p>
+        <p className="text-xl font-semibold">
+          Tidak ada kegiatan terdekat bulan ini
+        </p>
         <RoleGuard allowedRoles={["manajemen"]}>
           <button
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg cursor-pointer flex items-center justify-center mx-auto gap-2"
-              onClick={() => setShowAddEventPopup(true)}
+            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg cursor-pointer flex items-center justify-center mx-auto gap-2"
+            onClick={() => setShowAddEventPopup(true)}
           >
             <Plus size={18} />
             <span>Tambah Event</span>
           </button>
         </RoleGuard>
 
-        
         {/* Add Event Dialog */}
         {showAddEventPopup && (
-          <AddEventDialog 
+          <AddEventDialog
             onClose={handleClosePopup}
             onSubmit={handleSubmit}
             formData={formData}
@@ -265,30 +284,31 @@ const EventList = () => {
             <ChevronLeft size={20} className="text-white" />
           </button>
         )}
-  
+
         {/* Carousel Page */}
         <div className="flex gap-4 overflow-hidden py-8 w-full justify-center">
-          {eventPages[currentPage].map((item, index) => { 
+          {eventPages[currentPage].map((item, index) => {
             return (
-            <motion.div
-              key={item.id}
-              whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <EventCard
-                title={item.title}
-                description={item.description}
-                coverImage={item.cover_image}
-                location={item.location}
-                startTime={item.start_time}
-                endTime={item.end_time}
-              />
-            </motion.div>
-          )})}
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <EventCard
+                  title={item.title}
+                  description={item.description}
+                  coverImage={item.cover_image}
+                  location={item.location}
+                  startTime={item.start_time}
+                  endTime={item.end_time}
+                />
+              </motion.div>
+            );
+          })}
         </div>
-  
+
         {/* Right Arrow */}
         {currentPage < totalPages - 1 && (
           <button
@@ -300,7 +320,7 @@ const EventList = () => {
           </button>
         )}
       </div>
-  
+
       {/* Pagination Dots */}
       <div className="flex gap-2 mt-2">
         {eventPages.map((_, index) => (
@@ -314,16 +334,18 @@ const EventList = () => {
           />
         ))}
       </div>
-  
+
       {/* Add Event Button */}
-      <button
-        className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
-        onClick={() => setShowAddEventPopup(true)}
-      >
-        <Plus size={18} />
-        <span>Tambah Acara</span>
-      </button>
-  
+      {isAdmin && (
+        <button
+          className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          onClick={() => setShowAddEventPopup(true)}
+        >
+          <Plus size={18} />
+          <span>Tambah Acara</span>
+        </button>
+      )}
+
       {/* Add Event Dialog */}
       {showAddEventPopup && (
         <AddEventDialog
@@ -336,7 +358,7 @@ const EventList = () => {
         />
       )}
     </div>
-  );  
+  );
 };
 
 // Add Event Dialog Component
@@ -344,46 +366,53 @@ type AddEventDialogProps = {
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
   formData: EventFormData;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   errors: { [key: string]: boolean };
   dateError: string | null;
 };
 
-const AddEventDialog = ({ 
-  onClose, 
-  onSubmit, 
-  formData, 
-  handleInputChange, 
-  errors, 
-  dateError 
+const AddEventDialog = ({
+  onClose,
+  onSubmit,
+  formData,
+  handleInputChange,
+  errors,
+  dateError,
 }: AddEventDialogProps) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         {/* Updated to use a white background with blur effect instead of dark overlay */}
-        <div 
-          className="fixed inset-0 bg-white/60 backdrop-blur-sm transition-opacity" 
+        <div
+          className="fixed inset-0 bg-white/60 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         ></div>
-        
+
         <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full max-w-md">
           <div className="bg-white p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-gray-900">Tambah Event</h3>
-              <button 
-                type="button" 
-                className="text-gray-400 hover:text-gray-500" 
+              <h3 className="text-xl font-semibold text-gray-900">
+                Tambah Event
+              </h3>
+              <button
+                type="button"
+                className="text-gray-400 hover:text-gray-500"
                 onClick={onClose}
                 aria-label="Close"
               >
                 <X size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={onSubmit} encType="multipart/form-data">
               {/* Title */}
               <div className="mb-4">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Judul Event *
                 </label>
                 <input
@@ -397,13 +426,18 @@ const AddEventDialog = ({
                   }`}
                 />
                 {errors.title && (
-                  <p className="text-sm text-red-600 mt-1">Judul wajib diisi.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    Judul wajib diisi.
+                  </p>
                 )}
               </div>
-              
+
               {/* Description */}
               <div className="mb-4">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Deskripsi *
                 </label>
                 <textarea
@@ -417,13 +451,18 @@ const AddEventDialog = ({
                   }`}
                 />
                 {errors.description && (
-                  <p className="text-sm text-red-600 mt-1">Deskripsi wajib diisi.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    Deskripsi wajib diisi.
+                  </p>
                 )}
               </div>
-              
+
               {/* Location */}
               <div className="mb-4">
-                <label htmlFor="location" className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="location"
+                  className="flex items-center gap-1 text-sm font-medium text-gray-700"
+                >
                   <MapPin size={16} />
                   <span>Lokasi</span>
                 </label>
@@ -437,10 +476,13 @@ const AddEventDialog = ({
                   placeholder="Masukkan lokasi acara"
                 />
               </div>
-              
+
               {/* Start Time */}
               <div className="mb-4">
-                <label htmlFor="start_time" className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="start_time"
+                  className="flex items-center gap-1 text-sm font-medium text-gray-700"
+                >
                   <Calendar size={16} />
                   <span>Waktu Mulai *</span>
                 </label>
@@ -455,13 +497,18 @@ const AddEventDialog = ({
                   }`}
                 />
                 {errors.start_time && (
-                  <p className="text-sm text-red-600 mt-1">Waktu mulai wajib diisi.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    Waktu mulai wajib diisi.
+                  </p>
                 )}
               </div>
-              
+
               {/* End Time */}
               <div className="mb-4">
-                <label htmlFor="end_time" className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="end_time"
+                  className="flex items-center gap-1 text-sm font-medium text-gray-700"
+                >
                   <Calendar size={16} />
                   <span>Waktu Selesai *</span>
                 </label>
@@ -476,16 +523,21 @@ const AddEventDialog = ({
                   }`}
                 />
                 {errors.end_time && (
-                  <p className="text-sm text-red-600 mt-1">Waktu selesai wajib diisi.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    Waktu selesai wajib diisi.
+                  </p>
                 )}
                 {dateError && (
                   <p className="text-sm text-red-600 mt-1">{dateError}</p>
                 )}
               </div>
-              
+
               {/* Organizer */}
               <div className="mb-4">
-                <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="organizer"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Penyelenggara
                 </label>
                 <input
@@ -501,7 +553,10 @@ const AddEventDialog = ({
 
               {/* Link Acara */}
               <div className="mb-4">
-                <label htmlFor="organizer" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="organizer"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Link
                 </label>
                 <input
@@ -514,7 +569,7 @@ const AddEventDialog = ({
                   placeholder="Link Acara"
                 />
               </div>
-              
+
               {/* Is Online */}
               <div className="mb-4 flex items-center">
                 <input
@@ -525,14 +580,20 @@ const AddEventDialog = ({
                   onChange={handleInputChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded"
                 />
-                <label htmlFor="is_online" className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor="is_online"
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   Event Online
                 </label>
               </div>
-              
+
               {/* Cover Image */}
               <div className="mb-4">
-                <label htmlFor="cover_image" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="cover_image"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Gambar Cover
                 </label>
                 <input
@@ -544,10 +605,13 @@ const AddEventDialog = ({
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                 />
               </div>
-              
+
               {/* Poster */}
               <div className="mb-4">
-                <label htmlFor="poster" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="poster"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Poster
                 </label>
                 <input
@@ -559,7 +623,7 @@ const AddEventDialog = ({
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                 />
               </div>
-              
+
               <div className="mt-6 flex justify-end gap-3">
                 <button
                   type="button"

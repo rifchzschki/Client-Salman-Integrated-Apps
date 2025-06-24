@@ -30,7 +30,7 @@ export default function HomePage() {
                   </h1>
                 </div>
                 <div className="flex flex-col items-center justify-center px-10">
-                  <EventList />
+                  <EventList/>
                 </div>
               </div>
               <div className="w-1/3">
