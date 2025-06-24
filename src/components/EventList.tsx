@@ -11,7 +11,7 @@ import {
   MapPin,
 } from "lucide-react";
 import RoleGuard from "@/app/auth/RoleGuard";
-import { User, useUser } from "@/contexts/UserContext";
+import { useUser } from "@/contexts/UserContext";
 
 type Event = {
   id: number;
