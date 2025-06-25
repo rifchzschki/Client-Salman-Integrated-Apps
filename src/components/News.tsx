@@ -6,7 +6,6 @@ import RoleGuard from "@/app/auth/RoleGuard";
 import Image from "next/image";
 import { useUser } from "@/contexts/UserContext";
 import { SlIcon } from "@/app/shoelace/shoelace-setup";
-import dynamic from "next/dynamic";
 
 interface NewsItem {
   news_id: number;

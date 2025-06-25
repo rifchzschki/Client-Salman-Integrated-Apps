@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { getDiscussionDetail, postReply } from "@/lib/api/discussions";
 import ReplyInput from "@/components/Reply/ReplyInput";
@@ -30,7 +29,7 @@ export default function DiscussionDetailPage() {
         setLoading(false);
       })
     }
-  },[])
+  },[numericId, user])
 
   const handleReply = async (content: string) => {
     await postReply(numericId, content);
