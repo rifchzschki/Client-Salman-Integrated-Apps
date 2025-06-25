@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const [user, setUser] = useState<{
-    first_name: string;
-    last_name: string;
-  } | null>(null);
+
+  const {user} = useUser();
+
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -32,34 +32,6 @@ const Navbar = () => {
     router.push("/login");
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.ok) {
-          const resData = await res.json();
-          setUser({
-            first_name: resData.data.first_name,
-            last_name: resData.data.last_name,
-          });
-        } else {
-          console.error("Failed to fetch user info");
-        }
-      } catch (err) {
-        console.error("Error fetching user info", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
   return (
     <nav className="bg-[#543310] text-white px-6 py-4 flex items-center justify-between">
       {/* Tombol Burger */}

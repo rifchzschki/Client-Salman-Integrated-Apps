@@ -1,9 +1,12 @@
 "use client";
+
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import RoleGuard from "@/app/auth/RoleGuard";
 import Image from "next/image";
 import { useUser } from "@/contexts/UserContext";
+import { SlIcon } from "@/app/shoelace/shoelace-setup";
+import dynamic from "next/dynamic";
 
 interface NewsItem {
   news_id: number;
@@ -18,8 +21,8 @@ interface NewsItem {
 }
 
 export default function News() {
-  const {user} = useUser();
-  const isAdmin = user && user.role === 'manajemen';
+  const { user } = useUser();
+  const isAdmin = user && user.role === "manajemen";
   const [news, setNews] = useState<NewsItem[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState<string | null>(
     `${process.env.NEXT_PUBLIC_API_URL}/news`
@@ -47,6 +50,7 @@ export default function News() {
   });
 
   const currentUserRole = isAdmin;
+  console.log("isAdmin ", user);
 
   const fetchNews = useCallback(
     async (query = "") => {
@@ -284,27 +288,32 @@ export default function News() {
           // console.log(typeof item.author, "test");
           return (
             <motion.div key={item.news_id} whileHover={{ scale: 1.05 }}>
-              <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10">
+              <div className="w-full flex flex-row items-center justify-between text-center p-4 space-y-4 shadow-lg rounded-m -z-10 ">
                 <Image
                   src={item.cover}
                   alt={item.title}
-                  width={150}
-                  height={150}
-                  className="w-1/3 h-auto object-cover rounded-lg"
+                  width={200}
+                  height={200}
+                  className="object-cover rounded-lg "
                   unoptimized
                 />
-                <div className="w-3/5 h-full flex flex-col items-start ml-4">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    By {formatAuthor(item.author)}
-                  </p>
-                  <p className="text-gray-700">{item.description}</p>
-                  <button
+                <div className="w-3/4 h-full flex flex-col items-center ">
+                  <div className="flex flex-col justify-start items-start">
+                    <h3 className="text-xl font-semibold">{item.title}</h3>
+                    <p className="text-sm text-gray-500">
+                      By {formatAuthor(item.author)}
+                    </p>
+                    <p className="text-gray-700">{item.description}</p>
+                    <a href={item.link} className="text-blue-500 underline">
+                      Read More
+                    </a>
+                    {/* <button
                     onClick={() => openLink(item.link)}
                     className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                   >
                     Read More
-                  </button>
+                    </button> */}
+                  </div>
                 </div>
                 {currentUserRole && (
                   <div className="flex flex-col gap-2">
@@ -312,13 +321,21 @@ export default function News() {
                       onClick={() => handleDeleteNews(item.news_id)}
                       className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 self-start"
                     >
-                      Delete
+                      <SlIcon
+                        name="trash"
+                        label="delete"
+                        className="text-white"
+                      ></SlIcon>
                     </button>
                     <button
                       onClick={() => handleEditClick(item)}
                       className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 self-start"
                     >
-                      Edit
+                      <SlIcon
+                        name="pencil"
+                        label="Edit"
+                        className="text-white"
+                      ></SlIcon>
                     </button>
                   </div>
                 )}

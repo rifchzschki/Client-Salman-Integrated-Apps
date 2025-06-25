@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, {useState, MouseEvent, useEffect} from "react";
 import RoleGuard from "@/app/auth/RoleGuard";
 import Footer from "@/components/Footer";
-import { User } from "@/contexts/UserContext";
+import { User, useUser } from "@/contexts/UserContext";
 
 
 type EventItem = {
@@ -41,10 +41,7 @@ const monthNames = [
 ];
 
 export default function Calendar() {
-
   const now = new Date();
-  const [user, setUser] = useState<User|null>(null);
-  const [, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
 
@@ -58,31 +55,7 @@ export default function Calendar() {
     pos: { top: 0, left: 0 },
   });
 
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      router.replace("/login");
-      return;
-    }
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-        .then((res) => {
-          if (!res.ok) throw new Error("Unauthorized");
-          return res.json();
-        })
-        .then((data) => setUser(data.data))
-        .catch(() => router.replace("/login"))
-        .finally(() => setLoading(false));
-  }, [router]);
-
+  const {user} = useUser();
   const isManager = user && user.role === "manajemen";
   const addEvent = (date: string): void => {
     const title = prompt("Event title:");

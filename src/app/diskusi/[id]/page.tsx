@@ -10,47 +10,27 @@ import Footer from "@/components/Footer";
 import MainDiscussion from "@/components/Reply/mainDiscussion";
 import PrayerSchedule from "@/components/PrayerTimes";
 import ReplyList from "@/components/Reply/replyList";
+import { useUser } from "@/contexts/UserContext";
+import { Discussion, Reply } from "@/types/types";
 
 export default function DiscussionDetailPage() {
-  const router = useRouter();
-  const [, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const numericId = parseInt(id as string, 10);
-  const [discussion, setDiscussion] = useState(null);
-  const [replies, setReplies] = useState([]);
+  const [discussion, setDiscussion] = useState<Discussion|null>(null);
+  const [replies, setReplies] = useState<Reply[]>([]);
   const [isReplying, setIsReplying] = useState(false);
+  const {user} = useUser();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.replace("/login");
-      return;
+  useEffect(()=>{
+    if(user){
+      getDiscussionDetail(numericId).then((res)=>{
+        setDiscussion(res.data.discussion as Discussion);
+        setReplies(res.data.replies as Reply[]);
+        setLoading(false);
+      })
     }
-    if (!id) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      if (!res.ok) throw new Error("Unauthorized");
-      return res.json();
-    })
-    .then((res) => {
-      setUser(res.data);
-      return getDiscussionDetail(numericId);
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        setDiscussion(res.data.discussion);
-        setReplies(res.data.replies);
-      }
-    })
-    .catch(() => router.replace("/login"))
-    .finally(() => setLoading(false));
-  }, [id, numericId, router]);
+  },[])
 
   const handleReply = async (content: string) => {
     await postReply(numericId, content);

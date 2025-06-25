@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
 type FormFields = 'first_name' | 'last_name' | 'email' | 'password' | 'confirm_password';
 type FormState = Record<FormFields, string>;
 
@@ -16,6 +17,11 @@ export default function Register() {
     confirm_password: "",
   });
 
+  const {user} = useUser();
+  if(user){
+    router.replace('/login');
+  }
+
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Partial<typeof form>>({});
 
@@ -28,20 +34,6 @@ export default function Register() {
     confirm_password: "Konfirmasi Kata Sandi",
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) router.replace("/");
-      })
-      .catch(() => {});
-  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

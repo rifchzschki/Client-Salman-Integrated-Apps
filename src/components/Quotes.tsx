@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { SlIcon, SlDialog } from "@/app/shoelace/shoelace-setup";
 import RoleGuard from "@/app/auth/RoleGuard";
 
 interface Quote{
@@ -10,22 +10,6 @@ interface Quote{
   created_at: Date,
   updated_at: Date
 }
-
-const SlIcon = dynamic(
-  () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
-  {
-    loading: () => <p>Loading...</p>,
-    ssr: false,
-  }
-);
-
-const SlDialog = dynamic(
-  () => import("@shoelace-style/shoelace/dist/react/dialog/index.js"),
-  {
-    loading: () => <p>Loading...</p>,
-    ssr: false,
-  }
-);
 
 const Quotes = () => {
   const [open, setOpen] = useState(false);

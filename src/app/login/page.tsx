@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
 
 export default function Login() {
   const router = useRouter();
@@ -11,20 +12,10 @@ export default function Login() {
     password: "",
   });
   const [error, setError] = useState("");
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.ok) router.replace("/");
-      })
-      .catch(() => {});
-  }, [router]);
+  const {user} = useUser();
+  if(user){
+    router.replace('/')
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
