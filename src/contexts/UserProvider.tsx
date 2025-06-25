@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
     fetchUser();
-  }, [router, token]);
+  }, [router, token, isAuthenticationPage]);
 
   if (loading) return <div>Loading...</div>;
 

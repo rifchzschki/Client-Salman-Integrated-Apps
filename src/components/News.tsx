@@ -170,11 +170,6 @@ export default function News() {
     }
   };
 
-  const openLink = (link: string) => {
-    console.log("clicked");
-    window.open(link, "_blank", "noopener,noreferrer");
-  };
-
   const handleEditClick = (item: NewsItem) => {
     setEditingNewsId(item.news_id);
     setEditNews({

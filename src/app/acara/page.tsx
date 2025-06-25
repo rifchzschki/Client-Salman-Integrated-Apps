@@ -3,7 +3,7 @@ import Navbar from "@/components/NavBar";
 import React, {useState, MouseEvent} from "react";
 import RoleGuard from "@/app/auth/RoleGuard";
 import Footer from "@/components/Footer";
-import { User, useUser } from "@/contexts/UserContext";
+import { useUser } from "@/contexts/UserContext";
 
 
 type EventItem = {
