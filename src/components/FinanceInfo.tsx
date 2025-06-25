@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import RoleGuard from "@/app/auth/RoleGuard";
+import { useUser } from "@/contexts/UserContext";
 
 const SlIcon = dynamic(
   () => import("@shoelace-style/shoelace/dist/react/icon/index.js"),
@@ -28,7 +28,8 @@ const FinanceInfo = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
-
+  const { user } = useUser();
+  const isAdmin = user && user.role === "manajemen";
   useEffect(() => {
     const fetchFinanceData = async () => {
       try {
@@ -202,7 +203,7 @@ const FinanceInfo = () => {
             </button>
           </>
         ) : (
-          <RoleGuard allowedRoles={["manajemen"]}>
+          isAdmin && (
             <button
               className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-sm w-10 h-7 flex items-center justify-center"
               onClick={handleEditClick}
@@ -213,7 +214,7 @@ const FinanceInfo = () => {
                 className="text-white"
               ></SlIcon>
             </button>
-          </RoleGuard>
+          )
         )}
       </div>
     </div>

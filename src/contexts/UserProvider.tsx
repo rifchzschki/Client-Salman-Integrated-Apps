@@ -9,11 +9,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthenticationPage = pathname === "/login" || pathname === "/signup";
-  const [token, setToken] = useState<string|null>(null);
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
+    const isAuthenticationPage = pathname === "/login" || pathname === "/signup";
+
     const fetchUser = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
@@ -36,18 +36,27 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (token && isAuthenticationPage) {
       router.replace("/");
       setLoading(false);
+      return;
     }
+
     if (!token && !isAuthenticationPage) {
       router.replace("/login");
       setLoading(false);
       return;
     }
-    fetchUser();
-  }, [router, token, isAuthenticationPage]);
 
-  if (loading) return <div>Loading...</div>;
+    if (token) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [pathname, router]);
+
+  if (loading) return <div>Loading ...</div>
 
   return (
-    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user }}>
+      {children}
+    </UserContext.Provider>
   );
 };

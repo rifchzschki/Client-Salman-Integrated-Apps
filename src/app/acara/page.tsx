@@ -1,10 +1,8 @@
 "use client";
 import Navbar from "@/components/NavBar";
-import React, {useState, MouseEvent} from "react";
-import RoleGuard from "@/app/auth/RoleGuard";
+import React, { useState, MouseEvent } from "react";
 import Footer from "@/components/Footer";
 import { useUser } from "@/contexts/UserContext";
-
 
 type EventItem = {
   id: number;
@@ -54,7 +52,7 @@ export default function Calendar() {
     pos: { top: 0, left: 0 },
   });
 
-  const {user} = useUser();
+  const { user } = useUser();
   const isManager = user && user.role === "manajemen";
   const addEvent = (date: string): void => {
     const title = prompt("Event title:");
@@ -189,31 +187,36 @@ export default function Calendar() {
               <h3>{popup.event.title}</h3>
               <p>{popup.event.date}</p>
               <div className="mt-2 space-x-2">
-                <button
-                  onClick={() => {
-                    editEvent(popup.event!.id);
-                    closePopup();
-                  }}
-                  className="px-2 py-1 rounded bg-brown text-white"
-                >
-                  Edit
-                </button>
-                <RoleGuard allowedRoles={["manajemen"]}>
+              {isManager ? (
+                <div style={{ display: "inline" }}>
                   <button
-                      onClick={() => {
-                        deleteEvent(popup.event!.id);
-                        closePopup();
-                      }}
-                      className="px-2 py-1 rounded border border-brown text-brown"
+                    onClick={() => {
+                      editEvent(popup.event!.id);
+                      closePopup();
+                    }}
+                    className="px-2 py-1 rounded border border-brown bg-brown text-brown"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      deleteEvent(popup.event!.id);
+                      closePopup();
+                    }}
+                    className="px-2 py-1 rounded border border-brown text-brown"
                   >
                     Delete
                   </button>
-                </RoleGuard>
-
-                <button onClick={closePopup} className="px-2 py-1 rounded">
+                  <button onClick={closePopup} className="px-2 py-1 border border-brown rounded">
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <button onClick={closePopup} className="px-2 py-1 border border-brown rounded">
                   Close
                 </button>
-              </div>
+              )}
+                </div>
             </div>
           </div>
         )}

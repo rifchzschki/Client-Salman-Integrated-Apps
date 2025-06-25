@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useUser } from "@/contexts/UserContext";
 
+interface Name {
+  first_name: string;
+  last_name: string;
+}
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState<Name | null>(null);
   const router = useRouter();
+  const { user } = useUser();
 
-  const {user} = useUser();
+  useEffect(() => {
+    console.log(user)
+    if (user) {
+      setName({
+        first_name: user.first_name,
+        last_name: user.last_name,
+      });
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
@@ -43,11 +57,20 @@ const Navbar = () => {
       </button>
 
       {/* Logo dan Info User */}
-      <div className="flex items-center space-x-4 cursor-pointer" onClick={() => router.push("/")}>
+      <div
+        className="flex items-center space-x-4 cursor-pointer"
+        onClick={() => router.push("/")}
+      >
         <span className="text-sm font-medium">
-          {user ? `${user.first_name} ${user.last_name}` : "Guest"}
+          {name ? `${name.first_name} ${name.last_name}` : "Guest"}
         </span>
-        <Image src="/Logo.svg" alt="Logo" width={8} height={8} className="h-8 w-8" />
+        <Image
+          src="/Logo.svg"
+          alt="Logo"
+          width={8}
+          height={8}
+          className="h-8 w-8"
+        />
       </div>
 
       {/* Sidebar */}

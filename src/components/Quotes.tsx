@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SlIcon, SlDialog } from "@/app/shoelace/shoelace-setup";
-import RoleGuard from "@/app/auth/RoleGuard";
+import { useUser } from "@/contexts/UserContext";
 
 interface Quote{
   id: number,
@@ -14,7 +14,8 @@ interface Quote{
 const Quotes = () => {
   const [open, setOpen] = useState(false);
   const [newQuote, setNewQuote] = useState("");
-
+  const {user} = useUser();
+  const isAdmin = user && user.role === 'manajemen';
   const [quotes, setQuotes] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -94,7 +95,7 @@ const Quotes = () => {
         >
           {quotes.length > 0 ? quotes[currentIndex] : "Loading..."}
         </p>
-        <RoleGuard allowedRoles={["manajemen"]}>
+        { isAdmin && (
           <div className="w-full flex justify-end">
             <button
               onClick={() => setOpen(true)}
@@ -103,7 +104,7 @@ const Quotes = () => {
               <SlIcon name="pencil" label="Edit" className="text-white"></SlIcon>
             </button>
           </div>
-        </RoleGuard>
+        )}
       </div>
 
       {/* Popup */}

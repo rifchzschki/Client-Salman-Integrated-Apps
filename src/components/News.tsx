@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import RoleGuard from "@/app/auth/RoleGuard";
 import Image from "next/image";
 import { useUser } from "@/contexts/UserContext";
 import { SlIcon } from "@/app/shoelace/shoelace-setup";
@@ -268,14 +267,14 @@ export default function News() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-80 border-2 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <RoleGuard allowedRoles={["manajemen"]}>
+        {currentUserRole && (
           <button
             onClick={() => setShowAddPopup(true)}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
             + Tambah Berita
           </button>
-        </RoleGuard>
+        )}
       </div>
       <div className="w-full flex flex-col gap-3 max-h-[300px] overflow-x-auto scroll-smooth">
         {news.map((item) => {

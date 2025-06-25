@@ -10,7 +10,6 @@ import {
   Calendar,
   MapPin,
 } from "lucide-react";
-import RoleGuard from "@/app/auth/RoleGuard";
 import { useUser } from "@/contexts/UserContext";
 
 type Event = {
@@ -245,7 +244,7 @@ const EventList = () => {
         <p className="text-xl font-semibold">
           Tidak ada kegiatan terdekat bulan ini
         </p>
-        <RoleGuard allowedRoles={["manajemen"]}>
+        { isAdmin && (
           <button
             className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg cursor-pointer flex items-center justify-center mx-auto gap-2"
             onClick={() => setShowAddEventPopup(true)}
@@ -253,7 +252,7 @@ const EventList = () => {
             <Plus size={18} />
             <span>Tambah Event</span>
           </button>
-        </RoleGuard>
+        )}
 
         {/* Add Event Dialog */}
         {showAddEventPopup && (
